@@ -1,0 +1,5 @@
+{
+  "name": "DataSentinel - AI Dynamic Cleaner",
+  "description": "An intelligent data pipeline that ingests dynamic sources (Google Sheets, APIs), performs domain-aware cleaning, anomaly detection, and semantic normalization using Gemini AI.",
+  "requestFramePermissions": []
+}
