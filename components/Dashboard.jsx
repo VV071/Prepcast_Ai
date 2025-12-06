@@ -4,6 +4,8 @@ import { DynamicFile } from './DynamicFile';
 import { FileSpreadsheet, Activity, LogOut } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
+import { Logo } from './Logo';
+
 export const Dashboard = ({ onLogout }) => {
     const [activeTab, setActiveTab] = useState('prepcast'); // 'prepcast' or 'dynamic'
 
@@ -19,18 +21,15 @@ export const Dashboard = ({ onLogout }) => {
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-8">
-                            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                                <FileSpreadsheet className="w-8 h-8 text-blue-600" />
-                                PrepCast-AI Platform
-                            </h1>
+                            <Logo variant="dark" textClassName="text-2xl" />
 
                             {/* Tab Navigation */}
                             <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
                                 <button
                                     onClick={() => setActiveTab('prepcast')}
                                     className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'prepcast'
-                                            ? 'bg-white text-blue-600 shadow-sm'
-                                            : 'text-slate-600 hover:text-slate-900'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-slate-600 hover:text-slate-900'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2">
@@ -41,8 +40,8 @@ export const Dashboard = ({ onLogout }) => {
                                 <button
                                     onClick={() => setActiveTab('dynamic')}
                                     className={`px-6 py-2 rounded-md font-medium transition-all ${activeTab === 'dynamic'
-                                            ? 'bg-white text-blue-600 shadow-sm'
-                                            : 'text-slate-600 hover:text-slate-900'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-slate-600 hover:text-slate-900'
                                         }`}
                                 >
                                     <div className="flex items-center gap-2">

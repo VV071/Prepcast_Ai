@@ -20,8 +20,8 @@ const StepIndicator = ({ currentStep }) => {
                         <div className="flex items-center min-w-fit">
                             <div
                                 className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 ${isCompleted || isCurrent
-                                        ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
-                                        : 'bg-white border-gray-300 text-gray-400'
+                                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                    : 'bg-white/5 border-slate-700 text-slate-500'
                                     }`}
                             >
                                 {isCompleted ? (
@@ -30,13 +30,13 @@ const StepIndicator = ({ currentStep }) => {
                                     IconComponent && <IconComponent className="w-5 h-5" />
                                 )}
                             </div>
-                            <span className={`ml-3 text-sm font-medium hidden md:block ${isCompleted || isCurrent ? 'text-blue-700' : 'text-gray-400'
+                            <span className={`ml-3 text-sm font-medium hidden md:block ${isCompleted || isCurrent ? 'text-blue-400' : 'text-slate-600'
                                 }`}>
                                 {step.title}
                             </span>
                         </div>
                         {index < STEPS.length - 1 && (
-                            <div className={`flex-1 h-0.5 mx-4 min-w-[20px] ${index < currentStep ? 'bg-blue-600' : 'bg-gray-200'
+                            <div className={`flex-1 h-0.5 mx-4 min-w-[20px] ${index < currentStep ? 'bg-blue-600' : 'bg-slate-700'
                                 }`} />
                         )}
                     </React.Fragment>

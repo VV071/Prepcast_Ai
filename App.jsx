@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { LoginPage } from './components/LoginPage';
 import { MainApp } from './components/MainApp';
+import { OnboardingPage } from './components/OnboardingPage';
 import { supabase } from './supabaseClient';
 import { runCompleteSetup } from './supabaseSetup';
+import { MouseReactiveLighting } from './components/3D/MouseReactiveLighting';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    const hasSeenOnboarding = localStorage.getItem('prepcast-onboarding-complete');
+    return !hasSeenOnboarding;
+  });
 
   useEffect(() => {
     // Check for existing session
@@ -52,25 +59,53 @@ function App() {
     setUser(null);
   };
 
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('prepcast-onboarding-complete', 'true');
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    localStorage.setItem('prepcast-onboarding-complete', 'true');
+    setShowOnboarding(false);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-t-2 border-blue-500 elevation-3"></div>
+          <div className="absolute inset-0 rounded-full glow-primary animate-pulse-glow"></div>
         </div>
       </div>
     );
   }
 
+  // Show onboarding for first-time users
+  if (showOnboarding && !isAuthenticated) {
+    return (
+      <ThemeProvider>
+        <MouseReactiveLighting>
+          <OnboardingPage
+            onComplete={handleOnboardingComplete}
+            onSkip={handleOnboardingSkip}
+          />
+        </MouseReactiveLighting>
+      </ThemeProvider>
+    );
+  }
+
   return (
-    <div className="antialiased font-sans">
-      {isAuthenticated ? (
-        <MainApp user={user} onLogout={handleLogout} />
-      ) : (
-        <LoginPage onLogin={handleLogin} />
-      )}
-    </div>
+    <ThemeProvider>
+      <MouseReactiveLighting>
+        <div className="antialiased font-sans text-slate-200">
+          {isAuthenticated ? (
+            <MainApp user={user} onLogout={handleLogout} />
+          ) : (
+            <LoginPage onLogin={handleLogin} />
+          )}
+        </div>
+      </MouseReactiveLighting>
+    </ThemeProvider>
   );
 }
 

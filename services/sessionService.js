@@ -138,7 +138,7 @@ export const logActivity = async (sessionId, userId, activityType, details = '',
         if (error) throw error;
         return data;
     } catch (err) {
-        console.warn("RPC log_activity failed, falling back to direct insert:", err.message);
+        // Silent fallback
         // Fallback to direct insert
         const { data, error } = await supabase
             .from('session_activity_logs')

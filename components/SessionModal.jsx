@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { X, Plus } from 'lucide-react';
+import { Modal3D } from './3D/Modal3D';
+import { Input3D } from './3D/Input3D';
+import { Button3D } from './3D/Button3D';
+import { FileText, Tag, Lock, Unlock } from 'lucide-react';
 
 export const SessionModal = ({ onClose, onCreate }) => {
     const [formData, setFormData] = useState({
@@ -20,108 +23,136 @@ export const SessionModal = ({ onClose, onCreate }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                    <h3 className="text-xl font-semibold text-slate-900">Create New Session</h3>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                    >
-                        <X className="w-5 h-5 text-slate-500" />
-                    </button>
-                </div>
+        <Modal3D
+            isOpen={true}
+            onClose={onClose}
+            title="Create New Session"
+            size="md"
+        >
+            <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Session Name */}
+                <Input3D
+                    label="Session Name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g., Monthly Survey Data - Nov 2024"
+                    leftIcon={<FileText className="w-5 h-5" />}
+                    helperText="Give your session a descriptive name"
+                    required
+                />
 
-                {/* Body */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            Session Name *
-                        </label>
-                        <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                            placeholder="e.g., Monthly Survey Data - Nov 2024"
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            Description
-                        </label>
+                {/* Description */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-medium text-slate-300 ml-1">
+                        Description
+                    </label>
+                    <div className="glass-light rounded-xl elevation-1 transition-all duration-300 focus-within:elevation-2 focus-within:border-blue-500/50">
                         <textarea
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                            rows="3"
-                            placeholder="Brief description of this data processing session..."
+                            className="w-full px-4 py-3 bg-transparent text-white placeholder:text-slate-600 focus:outline-none resize-none"
+                            placeholder="Optional: Add more details about this session..."
+                            rows={3}
                         />
                     </div>
+                    <span className="text-xs text-slate-500 ml-1">
+                        Provide context for your team (optional)
+                    </span>
+                </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            Session Type *
-                        </label>
-                        <select
-                            value={formData.type}
-                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        >
-                            <option value="survey">Survey Data Processing</option>
-                            <option value="dynamic">Dynamic Data Sources</option>
-                            <option value="batch">Batch Processing</option>
-                        </select>
+                {/* Session Type */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-medium text-slate-300 ml-1">
+                        Session Type
+                    </label>
+                    <div className="glass-light rounded-xl p-1">
+                        <div className="grid grid-cols-2 gap-1">
+                            {[
+                                { value: 'survey', label: 'Survey Data', desc: 'Process survey responses' },
+                                { value: 'dynamic', label: 'Dynamic File', desc: 'Real-time data processing' }
+                            ].map((type) => (
+                                <button
+                                    key={type.value}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, type: type.value })}
+                                    className={`p-3 rounded-lg transition-all duration-200 text-left ${formData.type === type.value
+                                            ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 elevation-1'
+                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                        }`}
+                                >
+                                    <div className="font-medium text-sm">{type.label}</div>
+                                    <div className="text-xs mt-0.5 opacity-70">{type.desc}</div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
+                </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">
-                            Tags (comma-separated)
-                        </label>
-                        <input
-                            type="text"
-                            value={formData.tags}
-                            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                            placeholder="survey, healthcare, monthly"
+                {/* Tags */}
+                <Input3D
+                    label="Tags"
+                    type="text"
+                    value={formData.tags}
+                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                    placeholder="e.g., Q4, customer-feedback, urgent"
+                    leftIcon={<Tag className="w-5 h-5" />}
+                    helperText="Comma-separated tags for organization"
+                />
+
+                {/* Privacy Toggle */}
+                <div className="flex items-center justify-between p-4 glass-light rounded-xl">
+                    <div className="flex items-center gap-3">
+                        {formData.isPublic ? (
+                            <Unlock className="w-5 h-5 text-green-400" />
+                        ) : (
+                            <Lock className="w-5 h-5 text-slate-400" />
+                        )}
+                        <div>
+                            <div className="text-sm font-medium text-white">
+                                {formData.isPublic ? 'Public Session' : 'Private Session'}
+                            </div>
+                            <div className="text-xs text-slate-500">
+                                {formData.isPublic
+                                    ? 'Visible to all team members'
+                                    : 'Only you can access this session'}
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, isPublic: !formData.isPublic })}
+                        className={`relative w-12 h-6 rounded-full transition-all duration-300 ${formData.isPublic ? 'bg-green-500/30' : 'bg-slate-700'
+                            }`}
+                    >
+                        <div
+                            className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-lg transition-all duration-300 ${formData.isPublic ? 'left-6' : 'left-0.5'
+                                }`}
                         />
-                    </div>
+                    </button>
+                </div>
 
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            id="makePublic"
-                            checked={formData.isPublic}
-                            onChange={(e) => setFormData({ ...formData, isPublic: e.target.checked })}
-                            className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
-                        />
-                        <label htmlFor="makePublic" className="text-sm text-slate-700">
-                            Make session public (shareable link)
-                        </label>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                        >
-                            <Plus className="w-4 h-4" />
-                            Create Session
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                {/* Actions */}
+                <div className="flex gap-3 pt-4">
+                    <Button3D
+                        type="button"
+                        variant="ghost"
+                        size="lg"
+                        onClick={onClose}
+                        fullWidth
+                    >
+                        Cancel
+                    </Button3D>
+                    <Button3D
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        fullWidth
+                    >
+                        Create Session
+                    </Button3D>
+                </div>
+            </form>
+        </Modal3D>
     );
 };
