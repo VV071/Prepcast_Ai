@@ -118,6 +118,16 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
 
             let uploadedFile = null;
             if (session?.id) {
+                // ADDED: Domain detection logic
+                let domain = 'general';
+                try {
+                    const sampleData = data.slice(0, 5);
+                    const detectionResult = await detectDomainWithGemini(columns, sampleData);
+                    domain = detectionResult.domain || 'general';
+                } catch (err) {
+                    addLog('warning', 'Domain detection failed, defaulting to General.');
+                }
+
                 addLog('success', `Domain detected: ${domain.toUpperCase()}`);
 
                 const defaultConfig = DOMAIN_INFO[domain].defaultConfig;
@@ -773,18 +783,17 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
             <div className="container mx-auto px-4 py-8 max-w-7xl">
                 {/* Header */}
                 {!hideHeader && (
-                    <div className="flex justify-between items-center mb-10">
-                        <div className="text-center flex-1">
-                            <div className="flex justify-center mb-2">
-                                <Logo variant="light" className="scale-125" />
-                            </div>
-                            <p className="text-slate-400 text-lg">Survey Data Processing for Official Statistics</p>
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                        <div className="flex items-center gap-4">
+                            <Logo variant="light" className="h-10" />
+                            <div className="h-8 w-px bg-white/10 hidden md:block"></div>
+                            <p className="text-slate-400 text-sm md:text-base font-medium">Survey Data Processing</p>
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-lg hover:bg-red-500/20 transition flex items-center gap-2">
+                            className="bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm">
                             <LogOut className="w-4 h-4" />
-                            Logout
+                            Sign Out
                         </button>
                     </div>
                 )}

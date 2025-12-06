@@ -10,7 +10,7 @@ export const Logo = ({
   const finalImgClass = iconClassName || imgClassName;
 
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div className={`inline-flex items-center ${className}`}>
       <img
         src="/logo.jpg"
         alt="PrepCast AI"

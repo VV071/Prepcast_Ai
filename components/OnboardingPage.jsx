@@ -165,7 +165,7 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                                                 elevation={4}
                                                 glassType="strong"
                                                 enableTilt
-                                                className="h-[500px] flex flex-col items-center justify-center p-8 group bg-slate-900/40 backdrop-blur-md border-white/10 hover:bg-slate-900/60 transition-colors duration-500"
+                                                className="h-full min-h-[300px] flex flex-col items-center justify-center p-6 group bg-slate-900/40 backdrop-blur-md border-white/10 hover:bg-slate-900/60 transition-colors duration-500"
                                             >
                                                 <div className="relative">
                                                     {/* Animated Glow Background */}
@@ -173,16 +173,16 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
 
                                                     {/* Icon Container */}
                                                     <motion.div
-                                                        animate={{ y: [0, -10, 0] }}
+                                                        animate={{ y: [0, -5, 0] }}
                                                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: index }}
-                                                        className={`relative z-10 w-28 h-28 rounded-2xl bg-gradient-to-br from-${feature.color}-500/20 to-${feature.color}-600/10 border border-${feature.color}-500/30 flex items-center justify-center mb-8 backdrop-blur-sm shadow-xl group-hover:shadow-${feature.color}-500/40 transition-all duration-300`}
+                                                        className={`relative z-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-${feature.color}-500/20 to-${feature.color}-600/10 border border-${feature.color}-500/30 flex items-center justify-center mb-6 backdrop-blur-sm shadow-xl group-hover:shadow-${feature.color}-500/40 transition-all duration-300`}
                                                     >
-                                                        <feature.icon className={`w-14 h-14 text-${feature.color}-400 drop-shadow-lg`} />
+                                                        <feature.icon className={`w-10 h-10 text-${feature.color}-400 drop-shadow-lg`} />
                                                     </motion.div>
                                                 </div>
 
-                                                <h3 className="text-3xl font-bold text-white mb-4 text-center group-hover:scale-105 transition-transform duration-300">{feature.title}</h3>
-                                                <p className="text-slate-300 text-lg text-center leading-relaxed font-light">{feature.description}</p>
+                                                <h3 className="text-xl font-bold text-white mb-3 text-center group-hover:scale-105 transition-transform duration-300">{feature.title}</h3>
+                                                <p className="text-slate-300 text-sm text-center leading-relaxed font-light">{feature.description}</p>
                                             </Card3D>
                                         </motion.div>
                                     ))}
@@ -206,24 +206,24 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                                             transition={{ delay: index * 0.15, type: "spring" }}
                                             whileHover={{ scale: 1.02 }}
                                         >
-                                            <Card3D elevation={3} glassType="medium" className="relative h-[250px] overflow-hidden group bg-slate-900/40 backdrop-blur-md border-white/10 hover:bg-slate-900/60">
+                                            <Card3D elevation={3} glassType="medium" className="relative h-full min-h-[180px] overflow-hidden group bg-slate-900/40 backdrop-blur-md border-white/10 hover:bg-slate-900/60 p-6">
                                                 {/* Animated Gradient Bar */}
-                                                <div className={`absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b ${step.color} group-hover:w-4 transition-all duration-300`} />
+                                                <div className={`absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b ${step.color} group-hover:w-3 transition-all duration-300`} />
 
                                                 {/* Background Blur Spot */}
-                                                <div className={`absolute -right-20 -bottom-20 w-64 h-64 bg-gradient-to-br ${step.color} blur-[100px] opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
+                                                <div className={`absolute -right-20 -bottom-20 w-40 h-40 bg-gradient-to-br ${step.color} blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-500`} />
 
-                                                <div className="h-full flex flex-col justify-between p-6 pl-8">
-                                                    <div className="flex justify-between items-start">
-                                                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold text-2xl shadow-lg transform group-hover:-translate-y-2 transition-transform duration-300`}>
+                                                <div className="h-full flex flex-col justify-between pl-4">
+                                                    <div className="flex justify-between items-start mb-4">
+                                                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold text-lg shadow-lg transform group-hover:-translate-y-1 transition-transform duration-300`}>
                                                             {step.number}
                                                         </div>
-                                                        <step.icon className="w-8 h-8 text-white/50 group-hover:text-white transition-colors duration-300" />
+                                                        <step.icon className="w-6 h-6 text-white/50 group-hover:text-white transition-colors duration-300" />
                                                     </div>
 
                                                     <div>
-                                                        <h3 className="text-2xl font-bold text-white mb-2 group-hover:translate-x-2 transition-transform duration-300">{step.title}</h3>
-                                                        <p className="text-base text-slate-300 leading-relaxed max-w-md line-clamp-2">{step.description}</p>
+                                                        <h3 className="text-lg font-bold text-white mb-1 group-hover:translate-x-1 transition-transform duration-300">{step.title}</h3>
+                                                        <p className="text-sm text-slate-300 leading-relaxed max-w-md">{step.description}</p>
                                                     </div>
                                                 </div>
                                             </Card3D>
