@@ -29,6 +29,15 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    // FIX: Vercel deployment appears "too big" compared to localhost.
+    // Localhost uses CDN (16px base?), but production build needs a smaller base.
+    // We apply this ONLY in production to avoid affecting the "perfect" localhost state.
+    if (import.meta.env.PROD) {
+      document.documentElement.style.fontSize = '14px';
+    }
+  }, []);
+
   const checkAuth = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
