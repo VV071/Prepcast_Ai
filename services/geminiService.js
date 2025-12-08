@@ -9,7 +9,7 @@ export const detectDomainWithGemini = async (
 ) => {
     if (!API_KEY) {
         console.warn("No API Key found for Gemini. Defaulting to general.");
-        return 'general';
+        return { domain: 'general' };
     }
 
     try {
@@ -35,14 +35,15 @@ export const detectDomainWithGemini = async (
 
         const text = response.text?.trim().toLowerCase();
 
-        if (text?.includes('healthcare')) return 'healthcare';
-        if (text?.includes('finance')) return 'finance';
-        if (text?.includes('ecommerce')) return 'ecommerce';
-        if (text?.includes('hr') || text?.includes('human resources')) return 'hr';
+        let domain = 'general';
+        if (text?.includes('healthcare')) domain = 'healthcare';
+        else if (text?.includes('finance')) domain = 'finance';
+        else if (text?.includes('ecommerce')) domain = 'ecommerce';
+        else if (text?.includes('hr') || text?.includes('human resources')) domain = 'hr';
 
-        return 'general';
+        return { domain };
     } catch (error) {
         console.error("Gemini detection failed:", error);
-        return 'general';
+        return { domain: 'general' };
     }
 };
