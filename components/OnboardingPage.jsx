@@ -39,19 +39,19 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                     icon: FileSpreadsheet,
                     title: "Static & Dynamic Files",
                     description: "Handle any data source - spreadsheets, APIs, real-time streams, or file uploads",
-                    color: "blue"
+                    color: "aura-violet"
                 },
                 {
                     icon: Brain,
                     title: "AI-Powered Detection",
                     description: "Gemini API with BERT fallback automatically detects your domain and schema",
-                    color: "purple"
+                    color: "aura-teal"
                 },
                 {
                     icon: Sparkles,
                     title: "Smart Processing",
                     description: "Advanced AI identifies patterns, anomalies, and data quality issues instantly",
-                    color: "cyan"
+                    color: "aura-pink"
                 }
             ]
         },
@@ -64,28 +64,28 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                     title: "Domain Detection",
                     description: "AI analyzes your data structure and identifies the domain (Healthcare, Finance, etc.)",
                     icon: Brain,
-                    color: "from-blue-500 to-cyan-500"
+                    color: "from-aura-violet to-aura-teal"
                 },
                 {
                     number: 2,
                     title: "Schema Inference",
                     description: "Automatically determines data types, relationships, and validation rules",
                     icon: Database,
-                    color: "from-purple-500 to-pink-500"
+                    color: "from-aura-teal to-aura-pink"
                 },
                 {
                     number: 3,
                     title: "Anomaly Detection",
                     description: "Identifies outliers, missing values, and inconsistencies in your dataset",
                     icon: Sparkles,
-                    color: "from-amber-500 to-orange-500"
+                    color: "from-aura-pink to-aura-gold"
                 },
                 {
                     number: 4,
                     title: "Data Cleaning",
                     description: "Apply fixes, imputations, and normalizations with AI-powered suggestions",
                     icon: CheckCircle,
-                    color: "from-emerald-500 to-green-500"
+                    color: "from-aura-violet to-aura-pink"
                 }
             ]
         }
@@ -110,10 +110,10 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
             {/* Background Effects - Kept as overlay for depth */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                 <FloatingElement duration={20} yOffset={30}>
-                    <div className="absolute top-20 left-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl mix-blend-overlay" />
+                    <div className="absolute top-20 left-20 w-96 h-96 bg-aura-violet/5 rounded-full blur-[120px] mix-blend-screen" />
                 </FloatingElement>
                 <FloatingElement duration={25} yOffset={40}>
-                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl mix-blend-overlay" />
+                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-aura-teal/5 rounded-full blur-[120px] mix-blend-screen" />
                 </FloatingElement>
             </div>
 
@@ -147,8 +147,8 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                                             imgClassName="w-full h-full object-contain rounded-3xl p-2"
                                         />
                                     </FloatingElement>
-                                    <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white drop-shadow-sm">{slides[0].title}</h1>
-                                    <p className="text-2xl text-slate-300 font-light tracking-wide">{slides[0].subtitle}</p>
+                                    <h1 className="text-7xl font-black aura-text-gradient uppercase tracking-tighter italic drop-shadow-sm">{slides[0].title}</h1>
+                                    <p className="text-2xl text-slate-400 font-black uppercase tracking-widest opacity-80">{slides[0].subtitle}</p>
                                 </div>
 
                                 {/* Features Grid - BIG CARDS */}
@@ -169,15 +169,15 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                                             >
                                                 <div className="relative">
                                                     {/* Animated Glow Background */}
-                                                    <div className={`absolute inset-0 bg-${feature.color}-500/20 blur-3xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-700 opacity-50`} />
+                                                    <div className={`absolute inset-0 bg-${feature.color}/20 blur-3xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-700 opacity-50`} />
 
                                                     {/* Icon Container */}
                                                     <motion.div
-                                                        animate={{ y: [0, -5, 0] }}
+                                                        animate={{ y: [0, -10, 0] }}
                                                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: index }}
-                                                        className={`relative z-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-${feature.color}-500/20 to-${feature.color}-600/10 border border-${feature.color}-500/30 flex items-center justify-center mb-6 backdrop-blur-sm shadow-xl group-hover:shadow-${feature.color}-500/40 transition-all duration-300`}
+                                                        className={`relative z-10 w-24 h-24 rounded-3xl bg-gradient-to-br from-${feature.color}/20 to-${feature.color}/5 border border-${feature.color}/30 flex items-center justify-center mb-8 backdrop-blur-md shadow-2xl group-hover:shadow-${feature.color}/40 transition-all duration-300`}
                                                     >
-                                                        <feature.icon className={`w-10 h-10 text-${feature.color}-400 drop-shadow-lg`} />
+                                                        <feature.icon className={`w-12 h-12 text-${feature.color} drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]`} />
                                                     </motion.div>
                                                 </div>
 
@@ -192,8 +192,8 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                             <div className="space-y-8">
                                 {/* Header */}
                                 <div className="text-center space-y-4">
-                                    <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-white drop-shadow-sm">{slides[1].title}</h1>
-                                    <p className="text-2xl text-slate-300 font-light">{slides[1].subtitle}</p>
+                                    <h1 className="text-7xl font-black aura-text-gradient uppercase tracking-tighter italic drop-shadow-sm">{slides[1].title}</h1>
+                                    <p className="text-2xl text-slate-400 font-black uppercase tracking-widest opacity-80">{slides[1].subtitle}</p>
                                 </div>
 
                                 {/* Steps - Compact BIG CARDS 2x2 */}
@@ -243,9 +243,9 @@ export const OnboardingPage = ({ onComplete, onSkip }) => {
                             <button
                                 key={index}
                                 onClick={() => setCurrentSlide(index)}
-                                className={`h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                                    ? 'w-8 bg-blue-500'
-                                    : 'w-2 bg-slate-600 hover:bg-slate-500'
+                                className={`h-2 rounded-full transition-all duration-500 ${index === currentSlide
+                                    ? 'w-12 aura-gradient-violet shadow-aura-violet'
+                                    : 'w-3 bg-white/10 hover:bg-white/30'
                                     }`}
                             />
                         ))}

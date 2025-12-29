@@ -186,15 +186,18 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
     }, [sourceConfig, runBatchProcessor]);
 
     const StatCard = ({ title, value, icon, colorClass, trend }) => (
-        <Card3D elevation={2} glassType="medium" enableTilt={true} padding="md">
+        <Card3D elevation={2} glassType="medium" enableTilt={true} padding="md" className="border border-white/5 shadow-aura-violet/20">
             <div className="flex items-center justify-between mb-2">
-                <span className="text-slate-400 text-sm">{title}</span>
-                <div className={`p-2 rounded-lg bg-white/5 ${colorClass}`}>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{title}</span>
+                <div className={`p-2.5 rounded-xl glass-medium border border-white/10 ${colorClass} shadow-inner`}>
                     {icon}
                 </div>
             </div>
-            <div className="text-3xl font-bold text-white">{value}</div>
-            {trend && <div className="text-xs text-slate-500 mt-1">{trend}</div>}
+            <div className="text-3xl font-black text-white tracking-tighter">{value}</div>
+            {trend && <div className="text-[10px] font-black uppercase tracking-widest text-slate-600 mt-2 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-aura-pink" />
+                {trend}
+            </div>}
         </Card3D>
     );
 
@@ -217,15 +220,15 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                         transition={{ duration: 0.5 }}
                     >
                         <Card3D elevation={4} glassType="strong" className="max-w-3xl mx-auto" enableTilt={false}>
-                            <div className="flex items-center gap-4 mb-8">
+                            <div className="flex items-center gap-5 mb-10">
                                 <FloatingElement>
-                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                        <Database className="w-6 h-6 text-white" />
+                                    <div className="w-14 h-14 aura-gradient-violet rounded-2xl flex items-center justify-center shadow-aura-violet elevation-3">
+                                        <Database className="w-7 h-7 text-white" />
                                     </div>
                                 </FloatingElement>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-white">Add Data Source</h2>
-                                    <p className="text-slate-400">Connect a live data stream for real-time processing</p>
+                                    <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic">Source Intelligence</h2>
+                                    <p className="text-xs font-black text-slate-500 uppercase tracking-[0.15em] mt-1">Connect a live crystal telemetry stream</p>
                                 </div>
                             </div>
 
@@ -238,20 +241,20 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                             whileHover={{ scale: 1.02, y: -2 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => setSourceType(type.id)}
-                                            className={`relative p-4 rounded-xl border transition-all duration-300 text-left group ${sourceType === type.id
-                                                ? 'bg-blue-600/20 border-blue-500/50 shadow-lg shadow-blue-500/20'
-                                                : 'bg-black/20 border-white/10 hover:border-blue-500/30'
+                                            className={`relative p-5 rounded-2xl border transition-all duration-500 text-left group ${sourceType === type.id
+                                                ? 'aura-gradient-violet text-white border-transparent shadow-aura-violet elevation-3'
+                                                : 'glass-light border-white/5 hover:border-aura-violet/30'
                                                 }`}
                                         >
-                                            <div className="flex items-start gap-3">
-                                                <div className={`p-2 rounded-lg transition-colors ${sourceType === type.id ? 'bg-blue-500 text-white' : 'bg-white/5 text-slate-400 group-hover:text-blue-400'}`}>
-                                                    <type.icon className="w-5 h-5" />
+                                            <div className="flex items-start gap-4">
+                                                <div className={`p-2.5 rounded-xl transition-all duration-500 ${sourceType === type.id ? 'bg-white/20 text-white' : 'glass-medium text-slate-500 group-hover:text-aura-violet'}`}>
+                                                    <type.icon className="w-6 h-6" />
                                                 </div>
                                                 <div>
-                                                    <div className={`font-semibold transition-colors ${sourceType === type.id ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                                                    <div className={`font-black uppercase text-xs tracking-tighter transition-colors ${sourceType === type.id ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>
                                                         {type.label}
                                                     </div>
-                                                    <div className="text-xs text-slate-500 mt-1">{type.desc}</div>
+                                                    <div className={`text-[10px] mt-1 font-medium transition-colors ${sourceType === type.id ? 'text-white/70' : 'text-slate-600 group-hover:text-slate-400'}`}>{type.desc}</div>
                                                 </div>
                                             </div>
                                         </motion.button>
@@ -278,14 +281,14 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                         />
 
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-300 ml-1">Auto-Refresh Interval</label>
-                                            <div className="glass-light rounded-xl p-1 border border-white/10">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Polling Frequency</label>
+                                            <div className="glass-light rounded-2xl p-1 border border-white/5 transition-all focus-within:border-aura-violet/50">
                                                 <select
                                                     value={interval}
                                                     onChange={(e) => setInterval(e.target.value)}
-                                                    className="w-full bg-transparent text-white px-4 py-3 outline-none cursor-pointer [&>option]:bg-slate-900"
+                                                    className="w-full bg-transparent text-white px-4 py-3 outline-none cursor-pointer [&>option]:bg-bg-0 font-black uppercase text-[11px] tracking-widest"
                                                 >
-                                                    <option value="1">Every 1 Minute (Live Demo)</option>
+                                                    <option value="1">Every 1 Minute (Sync)</option>
                                                     <option value="5">Every 5 Minutes</option>
                                                     <option value="15">Every 15 Minutes</option>
                                                     <option value="60">Every 1 Hour</option>
@@ -335,18 +338,18 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <StaggerItem>
                                 <StatCard
-                                    title="Processed Rows"
+                                    title="Processed Crystals"
                                     value={stats.totalProcessed.toLocaleString()}
                                     icon={<Activity className="w-5 h-5" />}
-                                    colorClass="text-blue-400"
+                                    colorClass="text-aura-violet"
                                 />
                             </StaggerItem>
                             <StaggerItem>
                                 <StatCard
-                                    title="Active Domain"
+                                    title="Domain Logic"
                                     value={stats.currentDomain}
                                     icon={<Layers className="w-5 h-5" />}
-                                    colorClass="text-emerald-400"
+                                    colorClass="text-aura-teal"
                                 />
                             </StaggerItem>
                             <StaggerItem>
@@ -354,17 +357,17 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                     title="Anomalies"
                                     value={stats.anomaliesDetected}
                                     icon={<AlertTriangle className="w-5 h-5" />}
-                                    colorClass="text-red-400"
-                                    trend="+12%"
+                                    colorClass="text-aura-pink"
+                                    trend="+2.4% Volatility"
                                 />
                             </StaggerItem>
                             <StaggerItem>
                                 <StatCard
-                                    title="AI Imputations"
+                                    title="AI Synthesis"
                                     value={stats.valuesImputed}
                                     icon={<Cpu className="w-5 h-5" />}
-                                    colorClass="text-purple-400"
-                                    trend="Active"
+                                    colorClass="text-aura-violet"
+                                    trend="Live Stream"
                                 />
                             </StaggerItem>
                         </div>
@@ -374,11 +377,12 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                             {/* Logs */}
                             <StaggerItem className="lg:col-span-1">
                                 <Card3D elevation={3} glassType="medium" className="h-[600px] flex flex-col" padding="none">
-                                    <div className="p-4 border-b border-white/10 flex items-center gap-2">
-                                        <div className="p-2 rounded-lg bg-blue-500/10">
-                                            <Server className="w-4 h-4 text-blue-400" />
+                                    <div className="p-4 aura-gradient-violet shadow-aura-violet flex items-center gap-3 relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                                        <div className="p-2.5 rounded-xl glass-strong border border-white/20 relative z-10">
+                                            <Server className="w-4 h-4 text-white animate-pulse-glow" />
                                         </div>
-                                        <h3 className="text-white font-semibold">Processing Log</h3>
+                                        <h3 className="text-white font-black uppercase tracking-tighter relative z-10">Crystal Terminal</h3>
                                     </div>
                                     <div className="flex-1 overflow-y-auto p-4 space-y-2 font-mono text-xs scrollbar-hide">
                                         <AnimatePresence initial={false}>
@@ -387,10 +391,10 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                                     key={log.id}
                                                     initial={{ opacity: 0, x: -20 }}
                                                     animate={{ opacity: 1, x: 0 }}
-                                                    className={`p-3 rounded-lg border ${log.level === 'ERROR' ? 'bg-red-500/10 border-red-500/20 text-red-300' :
-                                                        log.level === 'WARN' ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' :
-                                                            log.level === 'SUCCESS' ? 'bg-green-500/10 border-green-500/20 text-green-300' :
-                                                                'bg-blue-500/10 border-blue-500/20 text-blue-300'
+                                                    className={`p-4 rounded-xl border transition-all duration-300 ${log.level === 'ERROR' ? 'bg-aura-pink/5 border-aura-pink/20 text-aura-pink shadow-aura-violet/5' :
+                                                        log.level === 'WARN' ? 'bg-aura-gold/5 border-aura-gold/20 text-aura-gold shadow-aura-gold/5' :
+                                                            log.level === 'SUCCESS' ? 'bg-aura-teal/5 border-aura-teal/20 text-aura-teal shadow-aura-teal/5' :
+                                                                'bg-aura-violet/5 border-aura-violet/20 text-aura-violet shadow-aura-violet/5'
                                                         }`}
                                                 >
                                                     <div className="flex items-start gap-2">
@@ -399,9 +403,9 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                                         {log.level === 'WARN' && <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />}
                                                         {log.level === 'INFO' && <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />}
                                                         <div className="flex-1">
-                                                            <div className="opacity-50 text-[10px] mb-0.5">{log.timestamp.toLocaleTimeString()}</div>
-                                                            <div className="font-medium">[{log.module}]</div>
-                                                            <div className="opacity-90">{log.message}</div>
+                                                            <div className="opacity-50 text-[9px] font-black tracking-widest mb-1">{log.timestamp.toLocaleTimeString()}</div>
+                                                            <div className="font-black uppercase tracking-tighter text-[10px]">[{log.module}]</div>
+                                                            <div className="text-[11px] font-medium leading-relaxed mt-0.5">{log.message}</div>
                                                         </div>
                                                     </div>
                                                 </motion.div>
@@ -414,26 +418,26 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                             {/* Data Grid */}
                             <StaggerItem className="lg:col-span-2">
                                 <Card3D elevation={3} glassType="medium" className="h-[600px] flex flex-col" padding="none">
-                                    <div className="p-4 border-b border-white/10 flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div className="p-2 rounded-lg bg-emerald-500/10">
-                                                <Activity className="w-4 h-4 text-emerald-400" />
+                                    <div className="p-4 border-b border-aura-violet/20 flex items-center justify-between glass-medium">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 rounded-xl aura-gradient-teal text-white shadow-aura-teal">
+                                                <Activity className="w-4 h-4" />
                                             </div>
-                                            <h3 className="text-white font-semibold">Live Data Stream</h3>
+                                            <h3 className="text-white font-black uppercase tracking-tighter">Prismatic Stream</h3>
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs text-slate-400">
-                                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                            Live
+                                        <div className="flex items-center gap-2.5 px-4 py-1.5 glass-strong rounded-full border border-white/10 shadow-inner">
+                                            <span className="w-2 h-2 rounded-full bg-aura-teal animate-pulse-glow" />
+                                            <span className="text-[10px] font-black text-aura-teal uppercase tracking-[0.2em]">Telemetry Active</span>
                                         </div>
                                     </div>
-                                    <div className="flex-1 overflow-auto">
-                                        <table className="min-w-full text-sm">
-                                            <thead className="bg-white/5 sticky top-0 backdrop-blur-md z-10">
+                                    <div className="flex-1 overflow-auto scrollbar-none">
+                                        <table className="min-w-full text-xs">
+                                            <thead className="bg-bg-0/80 sticky top-0 backdrop-blur-xl z-20 border-b border-white/5">
                                                 <tr>
                                                     {cleanedData[0] && Object.keys(cleanedData[0]).filter(k => !k.startsWith('_')).map(key => (
-                                                        <th key={key} className="px-6 py-3 text-left text-slate-400 font-medium border-b border-white/10">{key}</th>
+                                                        <th key={key} className="px-6 py-4 text-left text-slate-500 font-black uppercase tracking-[0.2em]">{key}</th>
                                                     ))}
-                                                    <th className="px-6 py-3 text-left text-slate-400 font-medium border-b border-white/10">Status</th>
+                                                    <th className="px-6 py-4 text-left text-slate-500 font-black uppercase tracking-[0.2em]">Logic State</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -449,7 +453,9 @@ export const DynamicFile = ({ session, onLogout, hideHeader = false }) => {
                                                                 <td key={key} className="px-6 py-3 text-slate-300">{value?.toString() || '-'}</td>
                                                             ))}
                                                             <td className="px-6 py-3">
-                                                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${STATUS_COLORS[row._status] || 'bg-slate-700/50 border-slate-600 text-slate-300'}`}>
+                                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-inner ${row._status === 'ANOMALY' ? 'aura-gradient-pink text-white shadow-aura-pink border-transparent' :
+                                                                    row._status === 'IMPUTED' ? 'aura-gradient-violet text-white shadow-aura-violet border-transparent' :
+                                                                        'glass-strong text-aura-teal border-aura-teal/30 shadow-aura-teal/10'}`}>
                                                                     {row._status}
                                                                 </span>
                                                             </td>

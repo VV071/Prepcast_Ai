@@ -1,5 +1,5 @@
 import React from 'react';
-import { Info, Settings, Upload, Download, Database, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
+import { Info, Settings, Upload, Download, Database, CheckCircle, AlertTriangle, AlertCircle, Zap } from 'lucide-react';
 
 const Sidebar = ({
     logs,
@@ -12,22 +12,22 @@ const Sidebar = ({
     return (
         <div className="space-y-6">
             {/* Logs Panel */}
-            <div className="glass-card rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                    <Info className="w-5 h-5 mr-2 text-blue-500" />
+            <div className="glass-card rounded-2xl p-6 shadow-aura-violet border border-aura-violet/10">
+                <h3 className="text-lg font-black text-white mb-4 flex items-center uppercase tracking-tighter">
+                    <Info className="w-5 h-5 mr-2 text-aura-violet animate-pulse-glow" />
                     Processing Log
                 </h3>
-                <div className="space-y-3 max-h-80 overflow-y-auto pr-2 scrollbar-hide">
+                <div className="space-y-3 max-h-80 overflow-y-auto pr-2 scrollbar-none">
                     {logs.length === 0 ? (
-                        <p className="text-slate-500 text-sm italic">No logs yet...</p>
+                        <p className="text-slate-500 text-sm italic font-medium">Listening for crystal signals...</p>
                     ) : (
                         [...logs].reverse().map(log => (
                             <div
                                 key={log.id}
-                                className={`p-3 rounded-lg text-sm border ${log.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
+                                className={`p-3 rounded-xl text-xs border transition-all duration-300 ${log.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
                                     log.type === 'warning' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
-                                        log.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-                                            'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                                        log.type === 'success' ? 'bg-aura-teal/10 border-aura-teal/20 text-aura-teal shadow-[0_0_10px_rgba(0,245,255,0.1)]' :
+                                            'bg-aura-violet/10 border-aura-violet/20 text-aura-violet-light'
                                     }`}
                             >
                                 <div className="flex items-start">
@@ -36,8 +36,8 @@ const Sidebar = ({
                                     {log.type === 'success' && <CheckCircle className="w-4 h-4 mr-2 mt-0.5 shrink-0" />}
                                     {log.type === 'info' && <Info className="w-4 h-4 mr-2 mt-0.5 shrink-0" />}
                                     <div>
-                                        <p className="font-medium">{log.message}</p>
-                                        <p className="text-xs opacity-70 mt-1">{log.timestamp}</p>
+                                        <p className="font-bold tracking-tight">{log.message}</p>
+                                        <p className="text-[10px] opacity-50 mt-1 uppercase font-black">{log.timestamp}</p>
                                     </div>
                                 </div>
                             </div>
@@ -47,56 +47,59 @@ const Sidebar = ({
             </div>
 
             {/* Quick Actions */}
-            <div className="glass-card rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                    <Settings className="w-5 h-5 mr-2 text-slate-400" />
+            <div className="glass-card rounded-2xl p-6 shadow-aura-teal border border-aura-teal/10">
+                <h3 className="text-lg font-black text-white mb-4 flex items-center uppercase tracking-tighter">
+                    <Settings className="w-5 h-5 mr-2 text-aura-teal/70" />
                     Quick Actions
                 </h3>
                 <div className="space-y-3">
                     <button
                         onClick={onUploadClick}
-                        className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors flex items-center group"
+                        className="w-full text-left p-3 glass-light hover:glass-medium border border-white/5 rounded-xl transition-all flex items-center group"
                     >
-                        <Upload className="w-4 h-4 mr-3 text-slate-400 group-hover:text-blue-400" />
-                        <span className="text-sm font-medium text-slate-300 group-hover:text-white">Upload New File</span>
+                        <Upload className="w-4 h-4 mr-3 text-aura-violet group-hover:scale-110 transition-transform" />
+                        <span className="text-xs font-black text-slate-300 group-hover:text-white uppercase tracking-wider">Upload New File</span>
                     </button>
 
                     <button
                         onClick={onExportRaw}
                         disabled={!canExport}
-                        className={`w-full text-left p-3 rounded-lg transition-colors flex items-center group ${canExport ? 'bg-white/5 hover:bg-white/10' : 'bg-white/5 opacity-50 cursor-not-allowed'
+                        className={`w-full text-left p-3 rounded-xl transition-all flex items-center group border border-white/5 ${canExport ? 'glass-light hover:glass-medium' : 'bg-white/5 opacity-30 cursor-not-allowed'
                             }`}
                     >
-                        <Download className="w-4 h-4 mr-3 text-slate-400 group-hover:text-blue-400" />
-                        <span className="text-sm font-medium text-slate-300 group-hover:text-white">Export Raw Data</span>
+                        <Download className="w-4 h-4 mr-3 text-aura-teal group-hover:scale-110 transition-transform" />
+                        <span className="text-xs font-black text-slate-300 group-hover:text-white uppercase tracking-wider">Export Raw Data</span>
                     </button>
 
                     <button
                         onClick={onExportProcessed}
                         disabled={!canExportProcessed}
-                        className={`w-full text-left p-3 rounded-lg transition-colors flex items-center group ${canExportProcessed ? 'bg-white/5 hover:bg-white/10' : 'bg-white/5 opacity-50 cursor-not-allowed'
+                        className={`w-full text-left p-3 rounded-xl transition-all flex items-center group border border-white/5 ${canExportProcessed ? 'glass-light hover:glass-medium' : 'bg-white/5 opacity-30 cursor-not-allowed'
                             }`}
                     >
-                        <Database className="w-4 h-4 mr-3 text-slate-400 group-hover:text-green-400" />
-                        <span className="text-sm font-medium text-slate-300 group-hover:text-white">Download Processed Data</span>
+                        <Database className="w-4 h-4 mr-3 text-aura-pink group-hover:scale-110 transition-transform" />
+                        <span className="text-xs font-black text-slate-300 group-hover:text-white uppercase tracking-wider">Download Crystal Data</span>
                     </button>
                 </div>
             </div>
 
             {/* Features */}
-            <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg p-6 text-white">
-                <h3 className="text-lg font-semibold mb-4">System Intelligence</h3>
-                <div className="space-y-3 text-sm text-indigo-100">
+            <div className="aura-gradient-violet rounded-2xl shadow-aura-violet p-6 text-white relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-150 transition-transform duration-1000">
+                    <Zap className="w-20 h-20" />
+                </div>
+                <h3 className="text-lg font-black mb-4 uppercase tracking-tighter">Crystal Intelligence</h3>
+                <div className="space-y-3 text-xs font-bold uppercase tracking-widest text-white/80">
                     <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                        <CheckCircle className="w-4 h-4 mr-2 text-aura-teal" />
                         AI Domain Detection
                     </div>
                     <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                        <CheckCircle className="w-4 h-4 mr-2 text-aura-teal" />
                         Smart Delta Cleaning
                     </div>
                     <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                        <CheckCircle className="w-4 h-4 mr-2 text-aura-teal" />
                         Weighted Statistics
                     </div>
                 </div>

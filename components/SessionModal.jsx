@@ -44,10 +44,10 @@ export const SessionModal = ({ onClose, onCreate }) => {
 
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-slate-300 ml-1">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                         Description
                     </label>
-                    <div className="glass-light rounded-xl elevation-1 transition-all duration-300 focus-within:elevation-2 focus-within:border-blue-500/50">
+                    <div className="glass-light rounded-2xl border border-white/5 transition-all duration-300 focus-within:border-aura-violet/50 shadow-inner">
                         <textarea
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -56,14 +56,14 @@ export const SessionModal = ({ onClose, onCreate }) => {
                             rows={3}
                         />
                     </div>
-                    <span className="text-xs text-slate-500 ml-1">
+                    <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider ml-1">
                         Provide context for your team (optional)
                     </span>
                 </div>
 
                 {/* Session Type */}
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-slate-300 ml-1">
+                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                         Session Type
                     </label>
                     <div className="glass-light rounded-xl p-1">
@@ -76,13 +76,13 @@ export const SessionModal = ({ onClose, onCreate }) => {
                                     key={type.value}
                                     type="button"
                                     onClick={() => setFormData({ ...formData, type: type.value })}
-                                    className={`p-3 rounded-lg transition-all duration-200 text-left ${formData.type === type.value
-                                            ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 elevation-1'
-                                            : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                    className={`p-4 rounded-xl transition-all duration-500 text-left border ${formData.type === type.value
+                                        ? 'aura-gradient-teal text-white shadow-aura-teal border-transparent elevation-2'
+                                        : 'glass-light text-slate-400 hover:text-white border-white/5'
                                         }`}
                                 >
-                                    <div className="font-medium text-sm">{type.label}</div>
-                                    <div className="text-xs mt-0.5 opacity-70">{type.desc}</div>
+                                    <div className="font-black text-xs uppercase tracking-tight">{type.label}</div>
+                                    <div className="text-[10px] mt-1 opacity-70 font-medium">{type.desc}</div>
                                 </button>
                             ))}
                         </div>
@@ -101,15 +101,15 @@ export const SessionModal = ({ onClose, onCreate }) => {
                 />
 
                 {/* Privacy Toggle */}
-                <div className="flex items-center justify-between p-4 glass-light rounded-xl">
+                <div className="flex items-center justify-between p-4 glass-light rounded-2xl border border-white/5">
                     <div className="flex items-center gap-3">
                         {formData.isPublic ? (
-                            <Unlock className="w-5 h-5 text-green-400" />
+                            <Unlock className="w-5 h-5 text-aura-teal animate-pulse-glow" />
                         ) : (
-                            <Lock className="w-5 h-5 text-slate-400" />
+                            <Lock className="w-5 h-5 text-aura-violet" />
                         )}
                         <div>
-                            <div className="text-sm font-medium text-white">
+                            <div className="text-xs font-black text-white uppercase tracking-wider">
                                 {formData.isPublic ? 'Public Session' : 'Private Session'}
                             </div>
                             <div className="text-xs text-slate-500">
@@ -122,7 +122,7 @@ export const SessionModal = ({ onClose, onCreate }) => {
                     <button
                         type="button"
                         onClick={() => setFormData({ ...formData, isPublic: !formData.isPublic })}
-                        className={`relative w-12 h-6 rounded-full transition-all duration-300 ${formData.isPublic ? 'bg-green-500/30' : 'bg-slate-700'
+                        className={`relative w-12 h-6 rounded-full transition-all duration-500 ${formData.isPublic ? 'aura-gradient-teal shadow-aura-teal' : 'bg-slate-800 border border-white/5'
                             }`}
                     >
                         <div
@@ -148,8 +148,9 @@ export const SessionModal = ({ onClose, onCreate }) => {
                         variant="primary"
                         size="lg"
                         fullWidth
+                        className="aura-gradient-teal shadow-aura-teal"
                     >
-                        Create Session
+                        Create Crystal Session
                     </Button3D>
                 </div>
             </form>

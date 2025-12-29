@@ -13,6 +13,11 @@ import { generateHTMLReport } from '../utils/reportGenerator';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '../supabaseClient';
 import { updateSession, uploadSessionFile, updateFileProcessingStatus, subscribeToFileProcessing } from '../services/sessionService';
+import { OnboardingTutorial } from './OnboardingTutorial';
+import { PDAEPanel } from './PDAEPanel';
+import { TrustBadge } from './TrustBadge';
+import { generatePDAEReport } from '../services/pdaeService';
+import { ToggleLeft, ToggleRight, Layout } from 'lucide-react';
 
 const INITIAL_STATE = {
     currentStep: 0,
@@ -38,7 +43,9 @@ const INITIAL_STATE = {
     changedCells: new Map(),
     forecastData: null,
     isForecastLoading: false,
-    forecastError: null
+    forecastError: null,
+    pdaeReport: null,
+    viewMode: 'simple' // 'simple' or 'advanced'
 };
 
 export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
@@ -140,7 +147,8 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                     detectedDomain: domain,
                     cleaningConfig: { ...prev.cleaningConfig, ...defaultConfig },
                     currentStep: 1,
-                    isProcessing: false
+                    isProcessing: false,
+                    pdaeReport: generatePDAEReport(data, columns, domain)
                 }));
 
                 if (uploadedFile?.id) {
@@ -376,15 +384,15 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     // --- Renders ---
 
     const renderUploadStep = () => (
-        <div className="glass-card rounded-xl p-10 text-center animate-fade-in">
-            <div className="border-2 border-dashed border-white/20 rounded-xl p-16 hover:border-blue-500 hover:bg-blue-500/5 transition-all cursor-pointer group"
+        <div id="upload-area" className="glass-card rounded-xl p-10 text-center animate-fade-in">
+            <div className="border-2 border-dashed border-white/20 rounded-2xl p-16 hover:border-aura-violet hover:bg-aura-violet/5 transition-all cursor-pointer group"
                 onClick={() => fileInputRef.current?.click()}>
-                <div className="w-20 h-20 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <div className="w-20 h-20 bg-aura-violet/20 text-aura-violet rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-aura-violet">
                     <FileSpreadsheet className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Upload Survey Data</h3>
-                <p className="text-slate-400 mb-6">Supports .csv, .xlsx, .xls</p>
-                <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-colors">
+                <h3 className="text-xl font-black text-white mb-2 uppercase tracking-tight">Upload Survey Data</h3>
+                <p className="text-slate-400 mb-6 font-medium">Supports .csv, .xlsx, .xls</p>
+                <button className="aura-gradient-violet text-white px-10 py-4 rounded-xl font-black shadow-aura-violet hover:scale-105 transition-all uppercase tracking-wider">
                     Select File
                 </button>
                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".csv,.xlsx,.xls" className="hidden" />
@@ -393,10 +401,10 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     );
 
     const renderSchemaStep = () => (
-        <div className="glass-card rounded-xl p-8 animate-fade-in">
+        <div id="schema-section" className="glass-card rounded-xl p-8 animate-fade-in">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white flex items-center">
-                    <Database className="w-6 h-6 mr-3 text-blue-500" />
+                <h2 className="text-2xl font-black text-white flex items-center uppercase tracking-tight">
+                    <Database className="w-6 h-6 mr-3 text-aura-teal animate-pulse" />
                     Schema & Domain
                 </h2>
                 {state.detectedDomain && (
@@ -405,6 +413,12 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                     </div>
                 )}
             </div>
+
+            {state.pdaeReport && (
+                <div id="trust-badge" className="mb-6">
+                    <TrustBadge score={state.pdaeReport.trustScore} />
+                </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
@@ -421,26 +435,26 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                     </div>
                 </div>
                 <div className="space-y-6">
-                    <div className="bg-blue-500/10 p-6 rounded-xl border border-blue-500/20">
-                        <h3 className="font-semibold text-blue-300 mb-2">Dataset Summary</h3>
-                        <div className="grid grid-cols-2 gap-4">
+                    <div className="aura-gradient-teal shadow-aura-teal p-6 rounded-2xl border border-transparent transition-all hover:scale-[1.02]">
+                        <h3 className="font-black text-white uppercase tracking-tighter mb-4">Dataset Pulse</h3>
+                        <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <p className="text-sm text-blue-400">Total Records</p>
-                                <p className="text-2xl font-bold text-white">{state.rawData.length}</p>
+                                <p className="text-white/70 text-[10px] uppercase font-black tracking-widest">Total Records</p>
+                                <p className="text-3xl font-black text-white">{(state.rawData.length).toLocaleString()}</p>
                             </div>
                             <div>
-                                <p className="text-sm text-blue-400">Columns</p>
-                                <p className="text-2xl font-bold text-white">{state.columns.length}</p>
+                                <p className="text-white/70 text-[10px] uppercase font-black tracking-widest">Variables</p>
+                                <p className="text-3xl font-black text-white">{state.columns.length}</p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-purple-500/10 p-6 rounded-xl border border-purple-500/20">
-                        <h3 className="font-semibold text-purple-300 mb-2">AI Insight</h3>
-                        <p className="text-sm text-purple-200">{DOMAIN_INFO[state.detectedDomain].description}</p>
+                    <div className="aura-gradient-violet shadow-aura-violet p-6 rounded-2xl border border-transparent transition-all hover:scale-[1.02]">
+                        <h3 className="font-black text-white uppercase tracking-tighter mb-2">Logic Matrix</h3>
+                        <p className="text-xs text-white/80 font-medium leading-relaxed">{DOMAIN_INFO[state.detectedDomain].description}</p>
                     </div>
                     <div className="flex justify-end pt-4">
                         <button onClick={() => setState(prev => ({ ...prev, currentStep: 2 }))}
-                            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-500 transition flex items-center shadow-lg shadow-blue-500/20">
+                            className="aura-gradient-violet text-white px-8 py-4 rounded-xl hover:scale-105 transition-all flex items-center shadow-aura-violet font-black uppercase tracking-wider">
                             Configure Cleaning <ArrowRight className="ml-2 w-4 h-4" />
                         </button>
                     </div>
@@ -450,57 +464,55 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     );
 
     const renderCleaningStep = () => (
-        <div className="glass-card rounded-xl p-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <RefreshCw className="w-6 h-6 mr-3 text-blue-500" />
-                Cleaning Configuration
+        <div className="glass-card rounded-2xl p-8 animate-fade-in border border-aura-teal/20">
+            <h2 className="text-2xl font-black text-white mb-8 flex items-center uppercase tracking-tighter italic">
+                <RefreshCw className="w-6 h-6 mr-3 text-aura-teal animate-pulse-glow" />
+                Scribing Matrix
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">Missing Value Imputation</label>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Synthesis Strategy</label>
                         <select
                             value={state.cleaningConfig.missingValueMethod}
                             onChange={(e) => setState(prev => ({ ...prev, cleaningConfig: { ...prev.cleaningConfig, missingValueMethod: e.target.value } }))}
-                            className="w-full p-3 bg-black/20 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            className="w-full p-4 bg-bg-0 border border-white/5 text-white rounded-xl focus:ring-2 focus:ring-aura-teal outline-none font-black uppercase text-[11px] tracking-widest shadow-inner">
                             <option value="mean">Mean Substitution</option>
                             <option value="median">Median Substitution</option>
-                            <option value="multiple">Multiple Imputation (Simulated)</option>
+                            <option value="multiple">Multiple Synthesis</option>
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">Outlier Detection</label>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Anomaly Detection Logic</label>
                         <select
                             value={state.cleaningConfig.outlierMethod}
                             onChange={(e) => setState(prev => ({ ...prev, cleaningConfig: { ...prev.cleaningConfig, outlierMethod: e.target.value } }))}
-                            className="w-full p-3 bg-black/20 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            className="w-full p-4 bg-bg-0 border border-white/5 text-white rounded-xl focus:ring-2 focus:ring-aura-teal outline-none font-black uppercase text-[11px] tracking-widest shadow-inner mb-6">
                             <option value="iqr">Interquartile Range (IQR)</option>
-                            <option value="zscore">Z-Score</option>
+                            <option value="zscore">Z-Score Matrix</option>
                             <option value="winsorize">Winsorization</option>
                         </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">Threshold</label>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Crystal Threshold</label>
                         <input
                             type="number"
                             step="0.1"
                             value={state.cleaningConfig.outlierThreshold}
                             onChange={(e) => setState(prev => ({ ...prev, cleaningConfig: { ...prev.cleaningConfig, outlierThreshold: parseFloat(e.target.value) } }))}
-                            className="w-full p-3 bg-black/20 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-full p-4 bg-bg-0 border border-white/5 text-white rounded-xl focus:ring-2 focus:ring-aura-teal outline-none font-black text-xs shadow-inner"
                         />
                     </div>
                 </div>
-                <div className="bg-white/5 p-6 rounded-xl border border-white/10">
-                    <h3 className="font-semibold text-white mb-4">Preview Configuration</h3>
-                    <ul className="space-y-3 text-sm text-slate-400">
-                        <li className="flex items-center"><Zap className="w-4 h-4 mr-2 text-amber-500" /> Domain: {state.detectedDomain}</li>
-                        <li className="flex items-center"><Zap className="w-4 h-4 mr-2 text-amber-500" /> Method: {state.cleaningConfig.missingValueMethod}</li>
-                        <li className="flex items-center"><Zap className="w-4 h-4 mr-2 text-amber-500" /> Outlier Logic: {state.cleaningConfig.outlierMethod} ({state.cleaningConfig.outlierThreshold})</li>
+                <div className="glass-medium p-8 rounded-2xl border border-white/5 shadow-inner">
+                    <h3 className="font-black text-white mb-6 uppercase tracking-tighter italic">Telemetric Preview</h3>
+                    <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <li className="flex items-center gap-3"><Zap className="w-3 h-3 text-aura-teal" /> Domain: <span className="text-white">{state.detectedDomain}</span></li>
+                        <li className="flex items-center gap-3"><Zap className="w-3 h-3 text-aura-teal" /> Logic: <span className="text-white">{state.cleaningConfig.missingValueMethod}</span></li>
+                        <li className="flex items-center gap-3"><Zap className="w-3 h-3 text-aura-teal" /> Anomaly: <span className="text-white">{state.cleaningConfig.outlierMethod}</span></li>
                     </ul>
                     <div className="mt-8 flex justify-end">
                         <button onClick={executeCleaning} disabled={state.isProcessing}
-                            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition flex items-center shadow-lg shadow-green-500/20">
-                            {state.isProcessing ? 'Processing...' : 'Start Cleaning'} <Zap className="ml-2 w-4 h-4" />
+                            className="aura-gradient-teal text-white px-8 py-4 rounded-xl hover:scale-105 transition-all flex items-center shadow-aura-teal font-black uppercase tracking-wider">
+                            {state.isProcessing ? 'Processing Crystals...' : 'Start Crystal Cleaning'} <Zap className="ml-2 w-4 h-4" />
                         </button>
                     </div>
                 </div>
@@ -509,110 +521,137 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     );
 
     const renderLiveEditStep = () => (
-        <div className="glass-card rounded-xl p-8 animate-fade-in flex flex-col h-[600px]">
-            <div className="flex justify-between items-center mb-4 shrink-0">
-                <h2 className="text-2xl font-bold text-white flex items-center">
-                    <FileSpreadsheet className="w-6 h-6 mr-3 text-blue-500" />
-                    Live Edit Mode
+        <div className="glass-card rounded-2xl p-8 animate-fade-in flex flex-col h-[650px] border border-aura-violet/20 shadow-aura-violet/10">
+            <div className="flex justify-between items-center mb-6 shrink-0">
+                <h2 className="text-2xl font-black text-white flex items-center uppercase tracking-tighter italic">
+                    <FileSpreadsheet className="w-7 h-7 mr-4 text-aura-violet shadow-aura-violet" />
+                    Crystal Flux Editor
                 </h2>
-                <div className="flex gap-3">
-                    <div className="px-4 py-2 bg-purple-500/10 text-purple-300 rounded-lg border border-purple-500/20 text-sm font-medium flex items-center">
-                        <Zap className="w-4 h-4 mr-2" />
-                        Delta Mode: {state.changedCells.size} edits
+                <div className="flex gap-4">
+                    <div className="px-5 py-2.5 glass-medium text-aura-violet rounded-xl border border-aura-violet/20 text-[10px] font-black uppercase tracking-widest flex items-center shadow-inner">
+                        <Zap className="w-4 h-4 mr-2 animate-pulse-glow" />
+                        Delta Flux: {state.changedCells.size} Crystals
                     </div>
                     {state.changedCells.size > 0 && (
                         <button onClick={executeDeltaCleaning} disabled={state.isProcessing}
-                            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-500 text-sm flex items-center transition shadow-lg shadow-purple-500/20">
-                            {state.isProcessing ? 'Re-cleaning...' : 'Re-Clean Deltas'}
+                            className="aura-gradient-violet text-white px-6 py-2.5 rounded-xl hover:scale-105 text-[10px] font-black uppercase tracking-widest flex items-center transition shadow-aura-violet elevation-2">
+                            {state.isProcessing ? 'Re-Flowing...' : 'Re-Crystalize Deltas'}
                         </button>
                     )}
+
+                    <div className="flex items-center bg-black/40 rounded-lg p-1 border border-white/10 mr-2">
+                        <button
+                            onClick={() => setState(prev => ({ ...prev, viewMode: 'simple' }))}
+                            className={`px-3 py-1.5 text-xs font-black rounded-md transition-all uppercase ${state.viewMode === 'simple' ? 'aura-gradient-violet text-white' : 'text-slate-400 hover:text-white'}`}
+                        >
+                            Simple
+                        </button>
+                        <button
+                            onClick={() => setState(prev => ({ ...prev, viewMode: 'advanced' }))}
+                            className={`px-3 py-1.5 text-xs font-black rounded-md transition-all uppercase ${state.viewMode === 'advanced' ? 'aura-gradient-violet text-white' : 'text-slate-400 hover:text-white'}`}
+                        >
+                            Advanced
+                        </button>
+                    </div>
+
                     <button onClick={() => {
                         setState(prev => ({ ...prev, currentStep: 4 }));
                         saveToDatabase({ current_step: 4 });
                     }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 text-sm flex items-center transition shadow-lg shadow-blue-500/20">
+                        className="aura-gradient-teal text-white px-6 py-2.5 rounded-xl hover:scale-105 transition-all text-sm flex items-center shadow-aura-teal font-black uppercase tracking-wider">
                         Next: Weights <ArrowRight className="ml-2 w-4 h-4" />
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-auto border border-white/10 rounded-lg relative bg-black/20">
-                <table className="min-w-full divide-y divide-white/10">
-                    <thead className="bg-white/5 sticky top-0 z-10">
-                        <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider sticky left-0 bg-[#1e293b] z-20 border-r border-white/10">#</th>
-                            {state.columns.map(col => (
-                                <th key={col} className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider min-w-[150px]">{col}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                        {state.processedData.slice(0, 100).map((row, idx) => (
-                            <tr key={idx} className="hover:bg-white/5">
-                                <td className="px-4 py-2 text-xs text-slate-500 border-r border-white/10 bg-white/5 sticky left-0">{idx + 1}</td>
-                                {state.columns.map(col => {
-                                    const cellKey = `${idx}-${col}`;
-                                    const isDirty = state.changedCells.has(cellKey);
-                                    return (
-                                        <td key={col}
-                                            className={`px-2 py-1 text-sm border-r border-transparent ${isDirty ? 'bg-amber-500/10' : ''}`}
-                                        >
-                                            <input
-                                                className={`w-full bg-transparent outline-none px-2 py-1 rounded ${isDirty ? 'text-amber-400 font-medium' : 'text-slate-300'}`}
-                                                value={row[col] ?? ''}
-                                                onChange={(e) => handleCellEdit(idx, col, e.target.value)}
-                                            />
-                                        </td>
-                                    );
-                                })}
+            <div className="flex flex-1 gap-4 overflow-hidden">
+
+                {/* Main Table */}
+                <div className="flex-1 overflow-auto border border-white/5 rounded-2xl relative bg-bg-0 shadow-inner scrollbar-none">
+                    <table className="min-w-full divide-y divide-white/5">
+                        <thead className="bg-bg-0 sticky top-0 z-20">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest sticky left-0 bg-bg-0 z-20 border-r border-white/5">#</th>
+                                {state.columns.map(col => (
+                                    <th key={col} className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest min-w-[180px]">{col}</th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="p-4 text-center text-sm text-slate-500 bg-white/5 border-t border-white/10 sticky bottom-0">
-                    Showing first 100 rows for performance. Edits apply to actual data.
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                            {state.processedData.slice(0, 100).map((row, idx) => (
+                                <tr key={idx} className="hover:bg-aura-violet/5 transition-colors group">
+                                    <td className="px-6 py-3 text-[10px] font-black text-slate-600 border-r border-white/5 bg-bg-0/50 sticky left-0 group-hover:text-aura-violet transition-colors">{idx + 1}</td>
+                                    {state.columns.map(col => {
+                                        const cellKey = `${idx}-${col}`;
+                                        const isDirty = state.changedCells.has(cellKey);
+                                        return (
+                                            <td key={col}
+                                                className={`px-4 py-2 transition-all border-r border-white/5 ${isDirty ? 'bg-aura-gold/10' : ''}`}
+                                            >
+                                                <input
+                                                    className={`w-full bg-transparent outline-none px-3 py-1.5 rounded-lg border border-transparent focus:border-aura-violet/30 focus:glass-medium text-xs transition-all ${isDirty ? 'text-aura-gold font-black shadow-aura-gold/5' : 'text-slate-400 focus:text-white'}`}
+                                                    value={row[col] ?? ''}
+                                                    onChange={(e) => handleCellEdit(idx, col, e.target.value)}
+                                                />
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="p-4 text-center text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 bg-bg-0/90 border-t border-white/5 sticky bottom-0 z-20 backdrop-blur-xl">
+                        Viewing Top-Tier Flux Clusters. Scribing persists to core matrix.
+                    </div>
                 </div>
+
+                {/* PDAE Panel */}
+                <div id="pdae-panel" className="w-80 shrink-0 hidden lg:block h-full overflow-hidden">
+                    <PDAEPanel report={state.pdaeReport} viewMode={state.viewMode} />
+                </div>
+
             </div>
         </div>
     );
 
+
     const renderWeightStep = () => (
-        <div className="glass-card rounded-xl p-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <Target className="w-6 h-6 mr-3 text-blue-500" />
+        <div className="glass-card rounded-2xl p-8 animate-fade-in shadow-aura-violet border border-aura-violet/20">
+            <h2 className="text-2xl font-black text-white mb-6 flex items-center uppercase tracking-tight">
+                <Target className="w-6 h-6 mr-3 text-aura-violet animate-pulse-glow" />
                 Weights & Analysis
             </h2>
             <div className="max-w-xl mx-auto space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Weight Column (Optional)</label>
+                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Weight Telemetry Source</label>
                     <select
                         value={state.weightConfig.weightColumn}
                         onChange={(e) => setState(prev => ({ ...prev, weightConfig: { ...prev.weightConfig, weightColumn: e.target.value } }))}
-                        className="w-full p-3 bg-black/20 border border-white/10 text-white rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="">-- No Weighting (Equal Weights) --</option>
+                        className="w-full p-4 bg-bg-0 border border-white/5 text-white rounded-xl focus:ring-2 focus:ring-aura-violet outline-none font-black text-xs shadow-inner">
+                        <option value="">-- Equal Weight Matrix --</option>
                         {state.columns.map(col => <option key={col} value={col}>{col}</option>)}
                     </select>
                 </div>
-                <div className="flex items-center space-x-3 bg-white/5 p-4 rounded-lg border border-white/10">
+                <div className="flex items-center space-x-4 glass-medium p-5 rounded-xl border border-white/5 shadow-inner">
                     <input
                         type="checkbox"
                         checked={state.weightConfig.computeMarginOfError}
                         onChange={(e) => setState(prev => ({ ...prev, weightConfig: { ...prev.weightConfig, computeMarginOfError: e.target.checked } }))}
-                        className="w-5 h-5 text-blue-600 rounded border-slate-600 bg-black/20 focus:ring-blue-500"
+                        className="w-6 h-6 rounded-lg bg-bg-0 border-white/10 text-aura-violet focus:ring-aura-violet transition-all"
                     />
-                    <span className="text-slate-300 font-medium">Compute 95% Confidence Intervals</span>
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Compute Prismatic Confidence Intervals (95%)</span>
                 </div>
                 <button onClick={executeWeighting} disabled={state.isProcessing}
-                    className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-500 transition flex items-center justify-center font-semibold text-lg shadow-lg shadow-blue-500/20">
-                    {state.isProcessing ? 'Calculating...' : 'Generate Statistics'} <Target className="ml-2 w-5 h-5" />
+                    className="w-full aura-gradient-violet text-white px-6 py-4 rounded-xl hover:scale-105 transition-all flex items-center justify-center font-black text-lg shadow-aura-violet uppercase tracking-wider">
+                    {state.isProcessing ? 'Glow-Calculating...' : 'Generate Crystal Stats'} <Target className="ml-2 w-5 h-5" />
                 </button>
 
                 {state.isForecastLoading && (
-                    <div className="mt-4 animate-fade-in">
-                        <button disabled className="w-full bg-purple-500/10 text-purple-300 border border-purple-500/20 px-6 py-4 rounded-lg flex items-center justify-center font-semibold text-lg animate-pulse">
-                            <Loader2 className="mr-2 w-5 h-5 animate-spin" />
-                            Predicting Future Trends...
-                        </button>
+                    <div className="mt-6 animate-fade-in">
+                        <div className="w-full aura-gradient-violet rounded-2xl p-6 flex flex-col items-center justify-center gap-4 shadow-aura-violet elevation-3">
+                            <WavyBarLoaderSmall activeColor="white" inactiveColor="rgba(255,255,255,0.2)" />
+                            <p className="text-xs font-black text-white uppercase tracking-[0.3em] animate-pulse">Scribing Future Clusters...</p>
+                        </div>
                     </div>
                 )}
             </div>
@@ -622,58 +661,64 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     const renderReportStep = () => (
         <div className="space-y-6 animate-fade-in">
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
-                    <div className="flex items-center">
-                        <Database className="w-8 h-8 mr-4 opacity-80" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="aura-gradient-violet rounded-3xl p-8 text-white shadow-aura-violet elevation-3 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                    <div className="flex items-center relative z-10">
+                        <Database className="w-10 h-10 mr-6 text-white group-hover:scale-110 transition-transform" />
                         <div>
-                            <p className="text-blue-100 text-sm">Final Records</p>
-                            <p className="text-3xl font-bold">{state.processedData.length}</p>
+                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Final Crystals</p>
+                            <p className="text-4xl font-black tracking-tighter italic">{state.processedData.length.toLocaleString()}</p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-6 text-white shadow-lg">
-                    <div className="flex items-center">
-                        <CheckCircle className="w-8 h-8 mr-4 opacity-80" />
+                <div className="aura-gradient-teal rounded-3xl p-8 text-white shadow-aura-teal elevation-3 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                    <div className="flex items-center relative z-10">
+                        <CheckCircle className="w-10 h-10 mr-6 text-white group-hover:scale-110 transition-transform" />
                         <div>
-                            <p className="text-emerald-100 text-sm">Variables Analyzed</p>
-                            <p className="text-3xl font-bold">{Object.keys(state.statistics).length}</p>
+                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Logic Channels</p>
+                            <p className="text-4xl font-black tracking-tighter italic">{Object.keys(state.statistics).length}</p>
                         </div>
                     </div>
                 </div>
-                <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-                    <div className="flex items-center">
-                        <TrendingUp className="w-8 h-8 mr-4 opacity-80" />
+                <div className="aura-gradient-pink rounded-3xl p-8 text-white shadow-aura-pink elevation-3 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
+                    <div className="flex items-center relative z-10">
+                        <TrendingUp className="w-10 h-10 mr-6 text-white group-hover:scale-110 transition-transform" />
                         <div>
-                            <p className="text-violet-100 text-sm">Confidence Level</p>
-                            <p className="text-3xl font-bold">95%</p>
+                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Signal Clarity</p>
+                            <p className="text-4xl font-black tracking-tighter italic">95.4%</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Statistical Table */}
-            <div className="glass-card rounded-xl p-8">
-                <h3 className="text-xl font-bold text-white mb-6">Weighted Statistical Estimates</h3>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-white/10">
-                        <thead className="bg-white/5">
+            <div className="glass-card rounded-2xl p-10 border border-white/5 shadow-inner overflow-hidden">
+                <h3 className="text-xl font-black text-white mb-8 flex items-center uppercase tracking-tighter italic">
+                    <Target className="w-6 h-6 mr-3 text-aura-teal" />
+                    Weighted Telemetry Analysis
+                </h3>
+                <div className="overflow-x-auto scrollbar-none">
+                    <table className="min-w-full divide-y divide-white/5">
+                        <thead className="bg-bg-0">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Variable</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Weighted Mean</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Std Error</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Margin of Error (±)</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Sample Size</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Logic Stream</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Weighted Mean</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Std Error</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Margin (±)</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Flux Points</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {Object.entries(state.statistics).map(([col, stats]) => (
-                                <tr key={col} className="hover:bg-white/5">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{col}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{stats.mean.toFixed(4)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{stats.standardError.toFixed(4)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-400 font-medium">±{stats.marginOfError.toFixed(4)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300">{stats.sampleSize}</td>
+                                <tr key={col} className="hover:bg-aura-teal/5 transition-colors group">
+                                    <td className="px-6 py-5 whitespace-nowrap text-xs font-black text-white uppercase tracking-tight group-hover:text-aura-teal transition-colors">{col}</td>
+                                    <td className="px-6 py-5 whitespace-nowrap text-xs font-black text-slate-300 font-mono tracking-tighter">{stats.mean.toFixed(6)}</td>
+                                    <td className="px-6 py-5 whitespace-nowrap text-xs font-black text-slate-500 font-mono tracking-tighter">{stats.standardError.toFixed(6)}</td>
+                                    <td className="px-6 py-5 whitespace-nowrap text-xs font-black text-aura-teal shadow-aura-teal/20 font-mono tracking-tighter">±{stats.marginOfError.toFixed(6)}</td>
+                                    <td className="px-6 py-5 whitespace-nowrap text-xs font-black text-slate-600 font-mono tracking-tighter">{stats.sampleSize.toLocaleString()}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -684,50 +729,53 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
 
             {/* Forecast Results */}
             {state.forecastData && (
-                <div className="glass-card rounded-xl p-8 border hover:border-purple-500/30 transition-colors border-purple-500/20 bg-purple-500/5 animate-fade-in-up">
-                    <div className="flex justify-between items-start mb-6">
-                        <h3 className="text-2xl font-bold text-white flex items-center">
-                            <Brain className="w-7 h-7 mr-3 text-purple-400" />
-                            AI Forecast Results
+                <div className="glass-card rounded-2xl p-10 border border-aura-violet/30 bg-aura-violet/5 animate-fade-in-up shadow-aura-violet/10">
+                    <div className="flex justify-between items-start mb-10">
+                        <h3 className="text-2xl font-black text-white flex items-center uppercase tracking-tighter italic">
+                            <Brain className="w-8 h-8 mr-4 text-aura-violet shadow-aura-violet animate-pulse-glow" />
+                            AI Predictive Flux
                         </h3>
-                        <div className="bg-purple-500/20 text-purple-300 border border-purple-500/30 px-4 py-2 rounded-full text-sm font-semibold flex items-center">
+                        <div className="bg-aura-violet/20 text-white border border-aura-violet/50 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center shadow-aura-violet">
                             <Zap className="w-4 h-4 mr-2" />
-                            {state.forecastData.confidence}% Confidence
+                            {state.forecastData.confidence}% Clarity Matrix
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-black/20 rounded-lg p-4 border border-white/5">
-                            <p className="text-sm text-purple-400 font-medium mb-1">Target Column</p>
-                            <p className="text-xl font-bold text-white truncate" title={state.forecastData.column}>{state.forecastData.column}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+                        <div className="glass-medium rounded-2xl p-5 border border-white/5 shadow-inner">
+                            <p className="text-[10px] text-aura-violet font-black uppercase tracking-widest mb-2">Target Flux</p>
+                            <p className="text-lg font-black text-white truncate uppercase tracking-tighter italic" title={state.forecastData.column}>{state.forecastData.column}</p>
                         </div>
-                        <div className="bg-black/20 rounded-lg p-4 border border-white/5">
-                            <p className="text-sm text-purple-400 font-medium mb-1">Method Used</p>
-                            <p className="text-sm font-bold text-white">{state.forecastData.method}</p>
+                        <div className="glass-medium rounded-2xl p-5 border border-white/5 shadow-inner">
+                            <p className="text-[10px] text-aura-violet font-black uppercase tracking-widest mb-2">Strategy</p>
+                            <p className="text-xs font-black text-white uppercase tracking-tighter">{state.forecastData.method}</p>
                         </div>
-                        <div className="bg-black/20 rounded-lg p-4 border border-white/5">
-                            <p className="text-sm text-purple-400 font-medium mb-1">Historical Data</p>
-                            <p className="text-xl font-bold text-white">{state.forecastData.dataPoints} Points</p>
+                        <div className="glass-medium rounded-2xl p-5 border border-white/5 shadow-inner">
+                            <p className="text-[10px] text-aura-violet font-black uppercase tracking-widest mb-2">Flux Points</p>
+                            <p className="text-lg font-black text-white tracking-tighter">{state.forecastData.dataPoints.toLocaleString()}</p>
                         </div>
-                        <div className="bg-black/20 rounded-lg p-4 border border-white/5">
-                            <p className="text-sm text-purple-400 font-medium mb-1">Trend Strength</p>
-                            <p className="text-xl font-bold text-white">{state.forecastData.trendStrength}%</p>
+                        <div className="glass-medium rounded-2xl p-5 border border-white/5 shadow-inner">
+                            <p className="text-[10px] text-aura-violet font-black uppercase tracking-widest mb-2">Trend Velocity</p>
+                            <div className="flex items-center gap-2">
+                                <TrendingUp className="w-4 h-4 text-aura-teal" />
+                                <p className="text-lg font-black text-white tracking-tighter">{state.forecastData.trendStrength}%</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="overflow-hidden rounded-xl border border-purple-500/20">
-                        <table className="min-w-full divide-y divide-purple-500/20">
-                            <thead className="bg-purple-500/10">
+                    <div className="overflow-hidden rounded-2xl border border-aura-violet/20 shadow-inner">
+                        <table className="min-w-full divide-y divide-aura-violet/20">
+                            <thead className="bg-aura-violet/10">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-300 uppercase tracking-wider">Future Step</th>
-                                    <th className="px-6 py-4 text-left text-xs font-semibold text-purple-300 uppercase tracking-wider">Predicted Value</th>
+                                    <th className="px-6 py-5 text-left text-[10px] font-black text-aura-violet uppercase tracking-widest">Future Iteration</th>
+                                    <th className="px-6 py-5 text-left text-[10px] font-black text-aura-violet uppercase tracking-widest">Predicted Flux</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-purple-500/10 bg-black/10">
+                            <tbody className="divide-y divide-aura-violet/10 bg-bg-0/30">
                                 {state.forecastData.predictions.map((value, index) => (
-                                    <tr key={index} className="hover:bg-purple-500/5 transition-colors">
-                                        <td className="px-6 py-4 text-sm font-medium text-slate-300">Step {index + 1}</td>
-                                        <td className="px-6 py-4 text-sm font-bold text-purple-400">{value.toFixed(4)}</td>
+                                    <tr key={index} className="hover:bg-aura-violet/10 transition-colors group">
+                                        <td className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest group-hover:text-white transition-colors">Iteration {index + 1}</td>
+                                        <td className="px-6 py-4 text-xs font-black text-aura-violet shadow-aura-violet/20 font-mono tracking-tighter group-hover:scale-105 transition-transform">{value.toFixed(6)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -749,7 +797,7 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                             itemStyle={{ color: '#f8fafc' }}
                         />
                         <Legend />
-                        <Bar dataKey="mean" fill="#3b82f6" name="Weighted Mean" />
+                        <Bar dataKey="mean" fill="var(--color-aura-violet)" name="Weighted Mean" radius={[4, 4, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
@@ -771,7 +819,7 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                     a.click();
                     URL.revokeObjectURL(url);
                 }}
-                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-500 transition flex items-center shadow-lg shadow-green-500/20">
+                    className="aura-gradient-teal text-white px-8 py-4 rounded-xl hover:scale-105 transition-all flex items-center shadow-aura-teal font-black uppercase tracking-wider">
                     <Download className="mr-2 w-4 h-4" /> Download HTML Report
                 </button>
             </div>
@@ -779,52 +827,54 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
     );
 
     return (
-        <div className={hideHeader ? "" : "min-h-screen bg-[#0f172a]"} >
-            <div className="container mx-auto px-4 py-8 max-w-7xl">
-                {/* Header */}
-                {!hideHeader && (
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-                        <div className="flex items-center gap-4">
-                            <Logo variant="light" className="h-10" />
-                            <div className="h-8 w-px bg-white/10 hidden md:block"></div>
-                            <p className="text-slate-400 text-sm md:text-base font-medium">Survey Data Processing</p>
+        <OnboardingTutorial>
+            <div className={hideHeader ? "" : "min-h-screen bg-bg-0 transition-colors duration-500"} >
+                <div className="container mx-auto px-4 py-8 max-w-7xl">
+                    {/* Header */}
+                    {!hideHeader && (
+                        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                            <div className="flex items-center gap-4">
+                                <Logo variant="light" className="h-10" />
+                                <div className="h-8 w-px bg-white/10 hidden md:block"></div>
+                                <p className="text-slate-400 text-sm md:text-base font-medium">Survey Data Processing</p>
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm">
+                                <LogOut className="w-4 h-4" />
+                                Sign Out
+                            </button>
                         </div>
-                        <button
-                            onClick={handleLogout}
-                            className="bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm">
-                            <LogOut className="w-4 h-4" />
-                            Sign Out
-                        </button>
-                    </div>
-                )}
+                    )}
 
 
-                {state.currentStep > 0 && <StepIndicator currentStep={state.currentStep} />}
+                    {state.currentStep > 0 && <StepIndicator currentStep={state.currentStep} />}
 
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-                    {/* Main Content */}
-                    <div className="xl:col-span-3">
-                        {state.currentStep === 0 && renderUploadStep()}
-                        {state.currentStep === 1 && renderSchemaStep()}
-                        {state.currentStep === 2 && renderCleaningStep()}
-                        {state.currentStep === 3 && renderLiveEditStep()}
-                        {state.currentStep === 4 && renderWeightStep()}
-                        {state.currentStep === 5 && renderReportStep()}
-                    </div>
+                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                        {/* Main Content */}
+                        <div className="xl:col-span-3">
+                            {state.currentStep === 0 && renderUploadStep()}
+                            {state.currentStep === 1 && renderSchemaStep()}
+                            {state.currentStep === 2 && renderCleaningStep()}
+                            {state.currentStep === 3 && renderLiveEditStep()}
+                            {state.currentStep === 4 && renderWeightStep()}
+                            {state.currentStep === 5 && renderReportStep()}
+                        </div>
 
-                    {/* Sidebar */}
-                    <div className="xl:col-span-1">
-                        <Sidebar
-                            logs={state.processingLogs}
-                            onUploadClick={() => setState(INITIAL_STATE)}
-                            onExportRaw={() => exportData(state.rawData, 'raw_data.csv')}
-                            onExportProcessed={() => exportData(state.processedData, 'processed_data.csv')}
-                            canExport={state.rawData.length > 0}
-                            canExportProcessed={state.processedData.length > 0}
-                        />
+                        {/* Sidebar */}
+                        <div className="xl:col-span-1">
+                            <Sidebar
+                                logs={state.processingLogs}
+                                onUploadClick={() => setState(INITIAL_STATE)}
+                                onExportRaw={() => exportData(state.rawData, 'raw_data.csv')}
+                                onExportProcessed={() => exportData(state.processedData, 'processed_data.csv')}
+                                canExport={state.rawData.length > 0}
+                                canExportProcessed={state.processedData.length > 0}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div >
+            </div >
+        </OnboardingTutorial>
     );
 };

@@ -6,6 +6,7 @@ import { supabase } from './supabaseClient';
 import { runCompleteSetup } from './supabaseSetup';
 import { MouseReactiveLighting } from './components/3D/MouseReactiveLighting';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { WavyBarLoaderFullPage } from './components/WavyBarLoader';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -78,14 +79,18 @@ function App() {
     setShowOnboarding(false);
   };
 
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-t-2 border-blue-500 elevation-3"></div>
-          <div className="absolute inset-0 rounded-full glow-primary animate-pulse-glow"></div>
-        </div>
-      </div>
+      <ThemeProvider>
+        <MouseReactiveLighting>
+          <WavyBarLoaderFullPage
+            activeColor="#BF00FF"
+            inactiveColor="rgba(191, 0, 255, 0.1)"
+            message="Scribing Crystal Matrix..."
+          />
+        </MouseReactiveLighting>
+      </ThemeProvider>
     );
   }
 

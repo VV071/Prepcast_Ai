@@ -1,0 +1,36 @@
+{
+    "healthcare": {
+        "age": {
+            "min": 0,
+            "max": 110
+        },
+        "systolic_bp": {
+            "min": 50,
+            "max": 250
+        },
+        "diastolic_bp": {
+            "min": 30,
+            "max": 150
+        }
+    },
+    "education": {
+        "attendance": {
+            "min": 0,
+            "max": 100
+        },
+        "gpa": {
+            "min": 0,
+            "max": 4.0
+        }
+    },
+    "finance": {
+        "credit_score": {
+            "min": 300,
+            "max": 850
+        },
+        "percentage": {
+            "min": 0,
+            "max": 100
+        }
+    }
+}

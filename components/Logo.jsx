@@ -10,12 +10,16 @@ export const Logo = ({
   const finalImgClass = iconClassName || imgClassName;
 
   return (
-    <div className={`inline-flex items-center ${className}`}>
-      <img
-        src="/logo.jpg"
-        alt="PrepCast AI"
-        className={`${finalImgClass} object-contain rounded-lg`}
-      />
+    <div className={`inline-flex items-center gap-2 ${className}`}>
+      <div className="relative">
+        <img
+          src="/logo.jpg"
+          alt="PrepCast-AI"
+          className={`${finalImgClass} object-contain rounded-xl shadow-aura-violet`}
+        />
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-violet-500/20 to-teal-400/20 pointer-events-none" />
+      </div>
+      <span className="text-xl font-black aura-text-gradient tracking-tighter uppercase">PrepCast-AI</span>
     </div>
   );
 };

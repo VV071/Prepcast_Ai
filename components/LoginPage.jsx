@@ -110,14 +110,14 @@ export const LoginPage = ({ onLogin }) => {
   return (
     <PageTransition className="min-h-screen flex w-full">
       {/* Background with layered parallax */}
-      <div className="fixed inset-0 -z-10 overflow-hidden perspective-xl">
-        <FloatingElement duration={15} yOffset={30} className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-blue-600/20 to-blue-400/10 blur-3xl" />
-        <FloatingElement duration={20} yOffset={-40} className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-purple-600/20 to-purple-400/10 blur-3xl" />
-        <FloatingElement duration={25} yOffset={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] rounded-full bg-gradient-to-br from-cyan-600/10 to-cyan-400/5 blur-3xl" />
+      <div className="fixed inset-0 -z-10 overflow-hidden perspective-xl bg-bg-0">
+        <FloatingElement duration={15} yOffset={30} className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-aura-violet/20 to-transparent blur-[120px]" />
+        <FloatingElement duration={20} yOffset={-40} className="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-aura-teal/10 to-transparent blur-[120px]" />
+        <FloatingElement duration={25} yOffset={20} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] h-[50%] rounded-full bg-gradient-to-br from-aura-pink/10 to-transparent blur-[120px]" />
       </div>
 
       {/* Left Column - Hero/Brand */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-16 text-white z-10">
+      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-16 z-10">
         <div className="relative">
           <FloatingElement duration={6} yOffset={10}>
             <Logo variant="light" className="mb-16 scale-125 origin-left" />
@@ -128,13 +128,13 @@ export const LoginPage = ({ onLogin }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <h1 className="text-7xl font-bold leading-tight mb-8 tracking-tight">
-              <span className="text-gradient-primary">Intelligent</span><br />
-              <span className="text-gradient-accent">Preparedness</span><br />
-              <span className="text-white">for Tomorrow</span>
+            <h1 className="text-7xl font-black leading-none mb-8 tracking-tighter uppercase italic">
+              <span className="aura-text-gradient">Intelligent</span><br />
+              <span className="text-white opacity-90">Preparedness</span><br />
+              <span className="text-white/50">for Tomorrow</span>
             </h1>
 
-            <p className="text-xl text-slate-300 leading-relaxed max-w-lg mb-16 font-light">
+            <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-lg mb-16 font-light">
               Next-generation analytics, predictive modeling, and comprehensive risk management designed for government and enterprise scale.
             </p>
           </motion.div>
@@ -158,13 +158,13 @@ export const LoginPage = ({ onLogin }) => {
                   padding="md"
                   className="group"
                 >
-                  <div className="flex items-center gap-5">
-                    <div className="p-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl text-blue-300 elevation-1">
-                      <item.icon className="w-7 h-7" />
+                  <div className="flex items-center gap-6">
+                    <div className="p-4 aura-gradient-violet rounded-2xl text-white shadow-aura-violet elevation-2">
+                      <item.icon className="w-8 h-8" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white text-lg mb-1">{item.title}</h3>
-                      <p className="text-sm text-slate-400">{item.desc}</p>
+                      <h3 className="font-black text-white text-xl mb-1 uppercase tracking-tighter">{item.title}</h3>
+                      <p className="text-sm text-slate-400 font-medium">{item.desc}</p>
                     </div>
                   </div>
                 </Card3D>
@@ -196,7 +196,7 @@ export const LoginPage = ({ onLogin }) => {
               <div className="lg:hidden flex justify-center mb-6">
                 <Logo variant="light" />
               </div>
-              <h2 className="text-h2 text-white mb-3 tracking-tight">
+              <h2 className="text-4xl font-black text-white mb-2 tracking-tighter uppercase italic">
                 {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
               </h2>
               <p className="text-slate-400">
@@ -261,13 +261,13 @@ export const LoginPage = ({ onLogin }) => {
                         checked={formData.rememberMe}
                         onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
                       />
-                      <div className={`w-5 h-5 border rounded transition-all duration-300 flex items-center justify-center ${formData.rememberMe ? 'bg-blue-600 border-blue-600 elevation-1' : 'border-slate-600 glass-light'}`}>
+                      <div className={`w-5 h-5 border rounded transition-all duration-300 flex items-center justify-center ${formData.rememberMe ? 'aura-gradient-violet border-aura-violet shadow-aura-violet' : 'border-slate-600 glass-light'}`}>
                         {formData.rememberMe && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
                     </div>
                     <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Remember me</span>
                   </label>
-                  <a href="#" className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                  <a href="#" className="text-sm font-black text-aura-teal hover:text-white transition-all uppercase tracking-widest">
                     Forgot Password?
                   </a>
                 </div>
@@ -302,7 +302,7 @@ export const LoginPage = ({ onLogin }) => {
                 {mode === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
                 <button
                   onClick={toggleMode}
-                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors focus:outline-none"
+                  className="font-black text-aura-teal hover:text-white transition-all uppercase tracking-widest"
                 >
                   {mode === 'signin' ? 'Create Account' : 'Sign In'}
                 </button>

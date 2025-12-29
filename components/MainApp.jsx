@@ -34,6 +34,8 @@ import { ThemeToggle } from './ThemeToggle';
 import { ShareModal } from './ShareModal';
 
 import { StaggerContainer, StaggerItem, FloatingElement } from './MotionWrapper';
+import { WavyBarLoader } from './WavyBarLoader';
+import { ScrollProgress } from './ParallaxScroll';
 
 export const MainApp = ({ user, onLogout }) => {
     const [currentView, setCurrentView] = useState('dashboard');
@@ -162,6 +164,21 @@ export const MainApp = ({ user, onLogout }) => {
         setShowShareModal(true);
     };
 
+    const handlePinSession = async (session) => {
+        try {
+            const updated = await updateSession(session.id, {
+                is_pinned: !session.is_pinned
+            });
+            // Update local state
+            setSessions(sessions.map(s => s.id === session.id ? { ...s, is_pinned: !s.is_pinned } : s));
+            if (currentSession?.id === session.id) {
+                setCurrentSession({ ...currentSession, is_pinned: !currentSession.is_pinned });
+            }
+        } catch (error) {
+            console.error('Failed to pin/unpin session:', error);
+        }
+    };
+
     const handleSendInvite = async (email, permissionLevel) => {
         try {
             const result = await addCollaborator(sessionToShare.id, email, user.id, permissionLevel);
@@ -211,7 +228,7 @@ export const MainApp = ({ user, onLogout }) => {
     };
 
     return (
-        <div className="flex h-screen overflow-hidden bg-[#0f172a] text-slate-200">
+        <div className="flex h-screen overflow-hidden bg-bg-0 text-slate-200">
             {/* Sidebar - Enhanced 3D */}
             <div className={`${sidebarOpen ? 'w-72' : 'w-0'} transition-all duration-300 glass-medium border-r border-white/10 flex flex-col elevation-2 overflow-hidden`}>
                 {/* Logo */}
@@ -237,12 +254,12 @@ export const MainApp = ({ user, onLogout }) => {
                                     whileHover={{ x: 4 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={() => setCurrentView(item.id)}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${currentView === item.id
-                                        ? 'glass-strong text-blue-400 border border-blue-500/30 elevation-1'
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 ${currentView === item.id
+                                        ? 'glass-strong text-aura-violet border border-aura-violet/30 elevation-2 shadow-aura-violet'
                                         : 'text-slate-400 hover:glass-light hover:text-slate-200'
                                         }`}
                                 >
-                                    <item.icon className="w-5 h-5" />
+                                    <item.icon className={`w-5 h-5 ${currentView === item.id ? 'text-aura-violet animate-pulse-glow' : ''}`} />
                                     <span className="font-medium">{item.label}</span>
                                 </motion.button>
                             ))}
@@ -261,7 +278,7 @@ export const MainApp = ({ user, onLogout }) => {
                                 onClick={() => setShowSessionModal(true)}
                                 className="text-blue-400 hover:text-blue-300 transition-colors"
                             >
-                                <PlusCircle className="w-4 h-4" />
+                                <PlusCircle className="w-4 h-4 text-aura-teal" />
                             </motion.button>
                         </div>
                         <div className="space-y-1">
@@ -276,7 +293,7 @@ export const MainApp = ({ user, onLogout }) => {
                                         : 'text-slate-400 hover:glass-light hover:text-slate-200'
                                         }`}
                                 >
-                                    <div className="text-sm font-medium truncate group-hover:text-blue-400 transition-colors">
+                                    <div className="text-sm font-medium truncate group-hover:text-aura-teal transition-colors">
                                         {session.session_name}
                                     </div>
                                     <div className="text-xs text-slate-600 group-hover:text-slate-500">
@@ -294,7 +311,7 @@ export const MainApp = ({ user, onLogout }) => {
                         whileHover={{ scale: 1.02 }}
                         className="flex items-center gap-3 p-2 rounded-lg hover:glass-medium cursor-pointer transition-all duration-200"
                     >
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg elevation-1">
+                        <div className="w-10 h-10 aura-gradient-violet rounded-full flex items-center justify-center text-white font-black shadow-aura-violet">
                             {getInitials(userProfile?.full_name || user.user_metadata?.full_name || user.email)}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -316,11 +333,11 @@ export const MainApp = ({ user, onLogout }) => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#0f172a] relative">
+            <div className="flex-1 flex flex-col min-w-0 bg-bg-0 relative">
                 {/* Background Gradients */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px]" />
-                    <div className="absolute bottom-[-20%] right-[20%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]" />
+                    <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] bg-aura-violet/10 rounded-full blur-[120px]" />
+                    <div className="absolute bottom-[-20%] right-[20%] w-[500px] h-[500px] bg-aura-teal/10 rounded-full blur-[120px]" />
                 </div>
 
                 {/* Top Bar - Enhanced 3D */}
@@ -335,7 +352,7 @@ export const MainApp = ({ user, onLogout }) => {
                             <Menu className="w-5 h-5" />
                         </motion.button>
                         <div className="flex items-center gap-3">
-                            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
+                            <div className="w-1 h-8 bg-gradient-to-b from-aura-violet to-aura-teal rounded-full animate-pulse" />
                             <h2 className="text-lg font-semibold text-white">
                                 {currentView === 'dashboard' ? 'Dashboard' :
                                     currentView === 'survey' ? 'Survey Processing' :
@@ -426,8 +443,8 @@ export const MainApp = ({ user, onLogout }) => {
                                 transition={{ duration: 0.5 }}
                                 className="mb-8"
                             >
-                                <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">
-                                    Welcome back, <FloatingElement duration={5} yOffset={5} className="inline-block"><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-[length:200%_auto] animate-shimmer">{(userProfile?.full_name || user.user_metadata?.full_name || 'User').split(' ')[0]}</span></FloatingElement>
+                                <h1 className="text-4xl font-black text-white mb-3 tracking-tight">
+                                    Welcome back, <FloatingElement duration={5} yOffset={5} className="inline-block"><span className="aura-text-gradient animate-shimmer">{(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}</span></FloatingElement>
                                 </h1>
                                 <p className="text-lg text-slate-400">
                                     Here's what's happening with your data processing sessions.
@@ -436,15 +453,13 @@ export const MainApp = ({ user, onLogout }) => {
 
                             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {sessionsLoading ? (
-                                    [1, 2, 3].map(i => (
-                                        <StaggerItem key={`skeleton-${i}`}>
-                                            <div className="glass-card border border-white/10 p-6 rounded-2xl min-h-[240px] animate-pulse">
-                                                <div className="h-4 bg-white/10 rounded w-3/4 mb-4"></div>
-                                                <div className="h-3 bg-white/5 rounded w-1/2 mb-2"></div>
-                                                <div className="h-3 bg-white/5 rounded w-2/3"></div>
-                                            </div>
-                                        </StaggerItem>
-                                    ))
+                                    <div className="col-span-full flex flex-col items-center justify-center py-20">
+                                        <WavyBarLoader
+                                            activeColor="#BF00FF"
+                                            inactiveColor="rgba(191, 0, 255, 0.1)"
+                                        />
+                                        <p className="aura-text-gradient text-[10px] font-black uppercase tracking-[0.3em] mt-8">Scribing Crystals...</p>
+                                    </div>
                                 ) : (
                                     <>
                                         {sessions
@@ -459,6 +474,7 @@ export const MainApp = ({ user, onLogout }) => {
                                                         onOpen={() => openSession(session)}
                                                         onDelete={() => deleteSession(session.id)}
                                                         onShare={() => handleShareSession(session)}
+                                                        onPin={handlePinSession}
                                                         formatTimeAgo={formatTimeAgo}
                                                     />
                                                 </StaggerItem>
@@ -467,19 +483,20 @@ export const MainApp = ({ user, onLogout }) => {
                                         <StaggerItem>
                                             <motion.button
                                                 onClick={() => setShowSessionModal(true)}
-                                                whileHover={{ scale: 1.02, borderColor: 'rgba(59, 130, 246, 0.5)' }}
+                                                whileHover={{ scale: 1.02, y: -4 }}
                                                 whileTap={{ scale: 0.98 }}
-                                                className="group relative flex flex-col items-center justify-center p-8 rounded-2xl border-2 border-dashed border-slate-700 hover:bg-blue-500/5 transition-all duration-300 min-h-[240px] w-full"
+                                                className="group relative flex flex-col items-center justify-center p-8 rounded-2xl border-2 border-dashed border-white/10 hover:border-aura-violet/50 hover:bg-aura-violet/5 transition-all duration-500 min-h-[240px] w-full overflow-hidden"
                                             >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-aura-violet/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                                 <motion.div
                                                     animate={{ rotate: [0, 5, -5, 0] }}
-                                                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                                                    className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-blue-500/20"
+                                                    transition={{ duration: 3, repeat: Infinity }}
+                                                    className="w-16 h-16 rounded-2xl glass-medium flex items-center justify-center mb-5 group-hover:aura-gradient-violet transition-all duration-500 shadow-inner group-hover:shadow-aura-violet group-hover:border-transparent relative z-10"
                                                 >
-                                                    <PlusCircle className="w-8 h-8 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                                                    <PlusCircle className="w-8 h-8 text-slate-400 group-hover:text-white transition-colors" />
                                                 </motion.div>
-                                                <h3 className="text-lg font-semibold text-slate-300 group-hover:text-blue-400 mb-1 transition-colors">Create New Session</h3>
-                                                <p className="text-sm text-slate-500 text-center max-w-[200px]">Start a new data processing project</p>
+                                                <h3 className="text-sm font-black text-slate-500 group-hover:text-white mb-2 transition-colors uppercase tracking-[0.2em] relative z-10">Create Crystal Session</h3>
+                                                <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest text-center max-w-[200px] relative z-10">Initiate a new telemetric stream</p>
                                             </motion.button>
                                         </StaggerItem>
                                     </>
@@ -538,6 +555,8 @@ export const MainApp = ({ user, onLogout }) => {
             )}
 
 
+            {/* Scroll Progress Indicator */}
+            <ScrollProgress />
         </div>
     );
 };
