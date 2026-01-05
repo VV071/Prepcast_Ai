@@ -19,7 +19,7 @@ const Sidebar = ({
                 </h3>
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2 scrollbar-none">
                     {logs.length === 0 ? (
-                        <p className="text-slate-500 text-sm italic font-medium">Listening for crystal signals...</p>
+                        <p className="text-slate-500 text-sm italic font-medium">Listening for your signals...</p>
                     ) : (
                         [...logs].reverse().map(log => (
                             <div
@@ -78,7 +78,7 @@ const Sidebar = ({
                             }`}
                     >
                         <Database className="w-4 h-4 mr-3 text-aura-pink group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-black text-slate-300 group-hover:text-white uppercase tracking-wider">Download Crystal Data</span>
+                        <span className="text-xs font-black text-slate-300 group-hover:text-white uppercase tracking-wider">Download Prep Data</span>
                     </button>
                 </div>
             </div>
@@ -88,7 +88,7 @@ const Sidebar = ({
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-150 transition-transform duration-1000">
                     <Zap className="w-20 h-20" />
                 </div>
-                <h3 className="text-lg font-black mb-4 uppercase tracking-tighter">Crystal Intelligence</h3>
+                <h3 className="text-lg font-black mb-4 uppercase tracking-tighter">PrepCast Intelligence</h3>
                 <div className="space-y-3 text-xs font-bold uppercase tracking-widest text-white/80">
                     <div className="flex items-center">
                         <CheckCircle className="w-4 h-4 mr-2 text-aura-teal" />

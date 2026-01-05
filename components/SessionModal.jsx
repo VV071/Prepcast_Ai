@@ -150,7 +150,7 @@ export const SessionModal = ({ onClose, onCreate }) => {
                         fullWidth
                         className="aura-gradient-teal shadow-aura-teal"
                     >
-                        Create Crystal Session
+                        Create Prep-Ai Session
                     </Button3D>
                 </div>
             </form>

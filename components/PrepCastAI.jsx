@@ -667,7 +667,7 @@ export const PrepCastAI = ({ session, onLogout, hideHeader = false }) => {
                     <div className="flex items-center relative z-10">
                         <Database className="w-10 h-10 mr-6 text-white group-hover:scale-110 transition-transform" />
                         <div>
-                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Final Crystals</p>
+                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">Final PrepCast Data</p>
                             <p className="text-4xl font-black tracking-tighter italic">{state.processedData.length.toLocaleString()}</p>
                         </div>
                     </div>

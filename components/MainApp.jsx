@@ -444,7 +444,7 @@ export const MainApp = ({ user, onLogout }) => {
                                 className="mb-8"
                             >
                                 <h1 className="text-4xl font-black text-white mb-3 tracking-tight">
-                                    Welcome back, <FloatingElement duration={5} yOffset={5} className="inline-block"><span className="aura-text-gradient animate-shimmer">{(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}</span></FloatingElement>
+                                    Welcome back, <FloatingElement duration={3} yOffset={3} className="inline-block"><span className="aura-text-gradient animate-shimmer">{(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}</span></FloatingElement>
                                 </h1>
                                 <p className="text-lg text-slate-400">
                                     Here's what's happening with your data processing sessions.
