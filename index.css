@@ -12,10 +12,10 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* PrepCast-AI Color System */
-  --color-aura-violet: #BF00FF;
-  --color-aura-teal: #00F5FF;
-  --color-aura-pink: #FF007F;
-  --color-aura-gold: #FFD700;
+  --color-aura-violet: #FA5C5C;
+  --color-aura-teal: #FBEF76;
+  --color-aura-pink: #FD8A6B;
+  --color-aura-gold: #FEC288;
 
   /* Primary Colors (Violet Based) */
   --color-primary-900: #2e003e;
@@ -46,16 +46,16 @@
   --color-bg-3: #1a253d;
 
   /* Crystal Glass */
-  --glass-ultra-light: rgba(191, 0, 255, 0.03);
-  --glass-light: rgba(191, 0, 255, 0.05);
-  --glass-medium: rgba(191, 0, 255, 0.08);
-  --glass-strong: rgba(191, 0, 255, 0.12);
+  --glass-ultra-light: rgba(250, 92, 92, 0.03);
+  --glass-light: rgba(250, 92, 92, 0.05);
+  --glass-medium: rgba(250, 92, 92, 0.08);
+  --glass-strong: rgba(250, 92, 92, 0.12);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-refraction: rgba(0, 245, 255, 0.05);
+  --glass-refraction: rgba(251, 239, 118, 0.05);
 
   /* Shadows (Aura Glow) */
-  --shadow-aura-violet: 0 4px 20px rgba(191, 0, 255, 0.2);
-  --shadow-aura-teal: 0 4px 20px rgba(0, 245, 255, 0.2);
+  --shadow-aura-violet: 0 4px 20px rgba(250, 92, 92, 0.2);
+  --shadow-aura-teal: 0 4px 20px rgba(251, 239, 118, 0.2);
   --shadow-depth-1: 0 2px 10px rgba(0, 0, 0, 0.2);
   --shadow-depth-2: 0 5px 20px rgba(0, 0, 0, 0.3);
   --shadow-depth-3: 0 12px 40px rgba(0, 0, 0, 0.4);
@@ -113,19 +113,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(191, 0, 255, 0.12), transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(0, 245, 255, 0.1), transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(255, 0, 127, 0.05), transparent 60%);
+    radial-gradient(circle at 10% 20%, rgba(250, 92, 92, 0.12), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(251, 239, 118, 0.1), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(253, 138, 107, 0.05), transparent 60%);
   background-attachment: fixed;
 }
 
 /* PrepCast-AI Utilities */
 .aura-gradient-violet {
-  background: linear-gradient(135deg, var(--color-aura-violet), #d84dff);
+  background: linear-gradient(135deg, var(--color-aura-violet), var(--color-aura-pink));
 }
 
 .aura-gradient-teal {
-  background: linear-gradient(135deg, var(--color-aura-teal), #55f8ff);
+  background: linear-gradient(135deg, var(--color-aura-teal), var(--color-aura-gold));
 }
 
 .aura-text-gradient {

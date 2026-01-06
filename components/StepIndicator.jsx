@@ -24,7 +24,7 @@ const StepIndicator = ({ currentStep }) => {
                                     : 'glass-medium border border-white/10 text-slate-500 hover:border-aura-violet/50'
                                     }`}
                                 style={{
-                                    boxShadow: isCurrent ? '0 0 20px rgba(191, 0, 255, 0.4), inset 0 0 10px rgba(255,255,255,0.4)' : ''
+                                    boxShadow: isCurrent ? '0 0 20px rgba(250, 92, 92, 0.4), inset 0 0 10px rgba(255,255,255,0.4)' : ''
                                 }}
                             >
                                 {isCompleted ? (

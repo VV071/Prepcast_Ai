@@ -45,7 +45,7 @@ export const Card3D = ({
       `}
             style={{
                 isolation: 'isolate',
-                boxShadow: '0px 10px 40px -15px rgba(191, 0, 255, 0.3), inset 0 0 0 1px rgba(255,255,255,0.1)'
+                boxShadow: '0px 10px 40px -15px rgba(250, 92, 92, 0.3), inset 0 0 0 1px rgba(255,255,255,0.1)'
             }}
             {...props}
         >
@@ -64,7 +64,7 @@ export const Card3D = ({
                     className="absolute inset-0 rounded-2xl pointer-events-none"
                     style={{
                         zIndex: 0,
-                        background: 'linear-gradient(135deg, rgba(191, 0, 255, 0.05), rgba(0, 245, 255, 0.05))',
+                        background: 'linear-gradient(135deg, rgba(250, 92, 92, 0.05), rgba(251, 239, 118, 0.05))',
                         filter: 'url(#glass-distortion)',
                         WebkitFilter: 'url(#glass-distortion)',
                     }}

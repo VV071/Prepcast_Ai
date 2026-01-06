@@ -36,6 +36,9 @@ import { ShareModal } from './ShareModal';
 import { StaggerContainer, StaggerItem, FloatingElement } from './MotionWrapper';
 import { WavyBarLoader } from './WavyBarLoader';
 import { ScrollProgress } from './ParallaxScroll';
+import { AnimatedSlider, AnimatedCard, CardContent, OnHover, DefaultView } from './AnimatedSlider';
+import { FuzzyText } from './FuzzyText';
+import { cn } from '../lib/utils';
 
 export const MainApp = ({ user, onLogout }) => {
     const [currentView, setCurrentView] = useState('dashboard');
@@ -169,13 +172,15 @@ export const MainApp = ({ user, onLogout }) => {
             const updated = await updateSession(session.id, {
                 is_pinned: !session.is_pinned
             });
-            // Update local state
-            setSessions(sessions.map(s => s.id === session.id ? { ...s, is_pinned: !s.is_pinned } : s));
+            // Update local state with the actual data from server
+            const finalPinnedState = updated ? updated.is_pinned : !session.is_pinned;
+            setSessions(prev => prev.map(s => s.id === session.id ? { ...s, is_pinned: finalPinnedState } : s));
             if (currentSession?.id === session.id) {
-                setCurrentSession({ ...currentSession, is_pinned: !currentSession.is_pinned });
+                setCurrentSession(prev => ({ ...prev, is_pinned: finalPinnedState }));
             }
         } catch (error) {
             console.error('Failed to pin/unpin session:', error);
+            alert('Failed to update session pin status. Please try again.');
         }
     };
 
@@ -444,19 +449,85 @@ export const MainApp = ({ user, onLogout }) => {
                                 className="mb-8"
                             >
                                 <h1 className="text-4xl font-black text-white mb-3 tracking-tight">
-                                    Welcome back, <FloatingElement duration={3} yOffset={3} className="inline-block"><span className="aura-text-gradient animate-shimmer">{(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}</span></FloatingElement>
+                                    Welcome back, <FloatingElement duration={3} yOffset={3} className="inline-block"><span className="aura-text-gradient"><FuzzyText original={(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}>{(userProfile?.full_name || user.user_metadata?.full_name || user.email).split(' ')[0]}</FuzzyText></span></FloatingElement>
                                 </h1>
                                 <p className="text-lg text-slate-400">
                                     Here's what's happening with your data processing sessions.
                                 </p>
                             </motion.div>
 
+                            {/* New Animated Slider for Recent Sessions - Only show when not searching or matches exist */}
+                            {!sessionsLoading && sessions.length > 0 && (
+                                <div className="mb-12">
+                                    {sessions.filter(s => !searchQuery || s.session_name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (
+                                        <AnimatedSlider title={searchQuery ? "Search Results" : "Recent Telemetry Streams"}>
+                                            {sessions
+                                                .filter(s => !searchQuery || s.session_name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                                .slice(0, 8)
+                                                .map(session => (
+                                                    <AnimatedCard
+                                                        key={`slider-${session.id}`}
+                                                        onClick={() => openSession(session)}
+                                                    >
+                                                        <CardContent>
+                                                            {/* Background Glow */}
+                                                            <div className={cn(
+                                                                "absolute inset-0 opacity-20",
+                                                                session.session_type === 'survey' ? "aura-gradient-violet" : "aura-gradient-teal"
+                                                            )} />
+
+                                                            {/* Default View (Collapsed) */}
+                                                            <DefaultView>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                                                        {session.session_type}
+                                                                    </div>
+                                                                    <div className="text-lg font-black truncate text-white uppercase tracking-tighter">
+                                                                        {session.session_name}
+                                                                    </div>
+                                                                </div>
+                                                            </DefaultView>
+
+                                                            {/* On Hover View (Expanded) */}
+                                                            <OnHover>
+                                                                <div className="space-y-3">
+                                                                    <div className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest aura-gradient-violet text-white">
+                                                                        {session.session_type}
+                                                                    </div>
+                                                                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter leading-none">
+                                                                        {session.session_name}
+                                                                    </h3>
+                                                                    <p className="text-sm text-slate-300 line-clamp-2 italic font-medium">
+                                                                        {session.description || "Experimental data stream processing initiated..."}
+                                                                    </p>
+                                                                    <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                                                                        <div className="text-[10px] font-black uppercase tracking-widest text-aura-teal">
+                                                                            Step {session.current_step || 0}/6
+                                                                        </div>
+                                                                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                                            {formatTimeAgo(session.updated_at)}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </OnHover>
+                                                        </CardContent>
+                                                    </AnimatedCard>
+                                                ))}
+                                        </AnimatedSlider>
+                                    ) : searchQuery && (
+                                        <div className="glass-light p-8 rounded-2xl border border-white/5 text-center">
+                                            <p className="text-slate-500 font-medium italic">No streams matching "{searchQuery}" in your recent activity.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {sessionsLoading ? (
                                     <div className="col-span-full flex flex-col items-center justify-center py-20">
                                         <WavyBarLoader
-                                            activeColor="#BF00FF"
-                                            inactiveColor="rgba(191, 0, 255, 0.1)"
+                                            activeColor="#FA5C5C"
+                                            inactiveColor="rgba(250, 92, 92, 0.1)"
                                         />
                                         <p className="aura-text-gradient text-[10px] font-black uppercase tracking-[0.3em] mt-8">Scribing Crystals...</p>
                                     </div>
@@ -557,6 +628,8 @@ export const MainApp = ({ user, onLogout }) => {
 
             {/* Scroll Progress Indicator */}
             <ScrollProgress />
+
+
         </div>
     );
 };

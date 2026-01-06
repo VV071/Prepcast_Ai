@@ -26,7 +26,7 @@ const Sidebar = ({
                                 key={log.id}
                                 className={`p-3 rounded-xl text-xs border transition-all duration-300 ${log.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
                                     log.type === 'warning' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' :
-                                        log.type === 'success' ? 'bg-aura-teal/10 border-aura-teal/20 text-aura-teal shadow-[0_0_10px_rgba(0,245,255,0.1)]' :
+                                        log.type === 'success' ? 'bg-aura-teal/10 border-aura-teal/20 text-aura-teal shadow-[0_0_10px_rgba(251,239,118,0.1)]' :
                                             'bg-aura-violet/10 border-aura-violet/20 text-aura-violet-light'
                                     }`}
                             >

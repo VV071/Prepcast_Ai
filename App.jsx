@@ -12,6 +12,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isRecovering, setIsRecovering] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => {
     const hasSeenOnboarding = localStorage.getItem('prepcast-onboarding-complete');
     return !hasSeenOnboarding;
@@ -22,9 +23,18 @@ function App() {
     checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-      setUser(session?.user || null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth event:', event);
+
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsAuthenticated(false);
+        setUser(null);
+        setIsRecovering(true);
+      } else {
+        setIsAuthenticated(!!session);
+        setUser(session?.user || null);
+        if (event === 'SIGNED_IN') setIsRecovering(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -115,7 +125,10 @@ function App() {
           {isAuthenticated ? (
             <MainApp user={user} onLogout={handleLogout} />
           ) : (
-            <LoginPage onLogin={handleLogin} />
+            <LoginPage
+              onLogin={handleLogin}
+              initialMode={isRecovering ? 'reset-password' : 'signin'}
+            />
           )}
         </div>
       </MouseReactiveLighting>

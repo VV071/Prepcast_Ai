@@ -3,6 +3,7 @@ import { Play, Share2, Trash2, Clock, Pin, FileText, BarChart2, CheckCircle2 } f
 import { Card3D } from './3D/Card3D';
 import { Button3D } from './3D/Button3D';
 import { motion } from 'framer-motion';
+import { FuzzyText } from './FuzzyText';
 
 export const SessionCard = ({ session, onOpen, onDelete, onShare, onPin, formatTimeAgo }) => {
     const getSessionTypeBadge = (type) => {
@@ -36,8 +37,8 @@ export const SessionCard = ({ session, onOpen, onDelete, onShare, onPin, formatT
                     <h3 className="text-xl font-black text-white mb-2 truncate group-hover:aura-text-gradient transition-all duration-500 uppercase tracking-tight">
                         {session.session_name}
                     </h3>
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getSessionTypeBadge(session.session_type)}`}>
-                        {session.session_type}
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black border ${getSessionTypeBadge(session.session_type)}`}>
+                        <FuzzyText original={session.session_type}>{session.session_type}</FuzzyText>
                     </span>
                 </div>
 
@@ -113,7 +114,7 @@ export const SessionCard = ({ session, onOpen, onDelete, onShare, onPin, formatT
                                 fill="transparent"
                                 strokeDasharray={circumference}
                                 strokeDashoffset={strokeDashoffset}
-                                className="text-blue-500 transition-all duration-500 ease-in-out"
+                                className="text-aura-violet transition-all duration-500 ease-in-out"
                             />
                         </svg>
                         <span className="absolute text-xs font-semibold text-white">{progress}%</span>
@@ -142,7 +143,7 @@ export const SessionCard = ({ session, onOpen, onDelete, onShare, onPin, formatT
                     Cleaned
                 </div>
                 <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${session.report_file_path || session.statistics
-                    ? 'bg-aura-pink text-white shadow-[0_0_15px_rgba(255,0,127,0.3)]'
+                    ? 'bg-aura-pink text-white shadow-[0_0_15px_rgba(253,138,107,0.3)]'
                     : 'bg-white/5 text-slate-600 border border-white/5'
                     }`}>
                     <BarChart2 className="w-3.5 h-3.5" />

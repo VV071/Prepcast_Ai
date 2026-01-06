@@ -8,13 +8,14 @@ import { Input3D } from './3D/Input3D';
 import { FloatingElement, PageTransition } from './MotionWrapper';
 import { motion } from 'framer-motion';
 
-export const LoginPage = ({ onLogin }) => {
-  const [mode, setMode] = useState('signin');
+export const LoginPage = ({ onLogin, initialMode = 'signin' }) => {
+  const [mode, setMode] = useState(initialMode);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
+    otp: '',
     rememberMe: false
   });
   const [errors, setErrors] = useState({});
@@ -44,6 +45,10 @@ export const LoginPage = ({ onLogin }) => {
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match';
       }
+    }
+
+    if (mode === 'verify-otp') {
+      if (!formData.otp || formData.otp.length !== 6) newErrors.otp = 'Please enter a valid 6-digit code';
     }
 
     setErrors(newErrors);
@@ -90,14 +95,34 @@ export const LoginPage = ({ onLogin }) => {
           alert('Account created successfully! Please sign in.');
           toggleMode();
         }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
+      } else if (mode === 'signin') {
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
           email: formData.email,
           password: formData.password,
         });
 
-        if (error) throw error;
+        if (authError) throw authError;
         onLogin();
+      } else if (mode === 'forgot-password') {
+        const { error } = await supabase.auth.resetPasswordForEmail(formData.email);
+        if (error) throw error;
+        alert('Verification code sent to your email!');
+        setMode('verify-otp');
+      } else if (mode === 'verify-otp') {
+        const { error } = await supabase.auth.verifyOtp({
+          email: formData.email,
+          token: formData.otp,
+          type: 'recovery',
+        });
+        if (error) throw error;
+        setMode('reset-password');
+      } else if (mode === 'reset-password') {
+        const { error } = await supabase.auth.updateUser({
+          password: formData.password
+        });
+        if (error) throw error;
+        alert('Password updated successfully! Please sign in with your new password.');
+        setMode('signin');
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -197,12 +222,15 @@ export const LoginPage = ({ onLogin }) => {
                 <Logo variant="light" />
               </div>
               <h2 className="text-4xl font-black text-white mb-2 tracking-tighter uppercase italic">
-                {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
+                {mode === 'signin' ? 'Welcome Back' :
+                  mode === 'signup' ? 'Create Account' :
+                    mode === 'forgot-password' ? 'Reset Access' : 'New Password'}
               </h2>
               <p className="text-slate-400">
-                {mode === 'signin'
-                  ? 'Enter your credentials to access the dashboard.'
-                  : 'Enter your details to request access.'}
+                {mode === 'signin' ? 'Enter your credentials to access the dashboard.' :
+                  mode === 'signup' ? 'Enter your details to request access.' :
+                    mode === 'verify-otp' ? 'Enter the 6-digit code sent to your email.' :
+                      mode === 'forgot-password' ? 'Enter your email to receive a recovery code.' : 'Create a strong new password for your account.'}
               </p>
             </div>
 
@@ -219,27 +247,31 @@ export const LoginPage = ({ onLogin }) => {
                 />
               )}
 
-              <Input3D
-                label="Email Address"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="name@organization.com"
-                leftIcon={<Mail className="w-5 h-5" />}
-                error={errors.email}
-              />
+              {(mode === 'signin' || mode === 'signup' || mode === 'forgot-password') && (
+                <Input3D
+                  label="Email Address"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="name@organization.com"
+                  leftIcon={<Mail className="w-5 h-5" />}
+                  error={errors.email}
+                />
+              )}
 
-              <Input3D
-                label="Password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="••••••••"
-                leftIcon={<Lock className="w-5 h-5" />}
-                error={errors.password}
-              />
+              {(mode === 'signin' || mode === 'signup' || mode === 'reset-password') && (
+                <Input3D
+                  label={mode === 'reset-password' ? "New Password" : "Password"}
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="••••••••"
+                  leftIcon={<Lock className="w-5 h-5" />}
+                  error={errors.password}
+                />
+              )}
 
-              {mode === 'signup' && (
+              {(mode === 'signup' || mode === 'reset-password') && (
                 <Input3D
                   label="Confirm Password"
                   type="password"
@@ -248,7 +280,19 @@ export const LoginPage = ({ onLogin }) => {
                   placeholder="••••••••"
                   leftIcon={<Lock className="w-5 h-5" />}
                   error={errors.confirmPassword}
+                />
+              )}
 
+              {mode === 'verify-otp' && (
+                <Input3D
+                  label="Verification Code"
+                  type="text"
+                  maxLength={6}
+                  value={formData.otp}
+                  onChange={(e) => setFormData({ ...formData, otp: e.target.value.replace(/\D/g, '') })}
+                  placeholder="123456"
+                  leftIcon={<Check className="w-5 h-5" />}
+                  error={errors.otp}
                 />
               )}
               {mode === 'signin' && (
@@ -267,9 +311,13 @@ export const LoginPage = ({ onLogin }) => {
                     </div>
                     <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Remember me</span>
                   </label>
-                  <a href="#" className="text-sm font-black text-aura-teal hover:text-white transition-all uppercase tracking-widest">
+                  <button
+                    type="button"
+                    onClick={() => setMode('forgot-password')}
+                    className="text-sm font-black text-aura-teal hover:text-white transition-all uppercase tracking-widest"
+                  >
                     Forgot Password?
-                  </a>
+                  </button>
                 </div>
               )}
 
@@ -293,15 +341,20 @@ export const LoginPage = ({ onLogin }) => {
                 rightIcon={<ArrowRight className="w-5 h-5" />}
                 className="mt-6"
               >
-                {mode === 'signin' ? 'Sign In' : 'Create Account'}
+                {mode === 'signin' ? 'Sign In' :
+                  mode === 'signup' ? 'Create Account' :
+                    mode === 'verify-otp' ? 'Verify Code' :
+                      mode === 'forgot-password' ? 'Send Reset Code' : 'Update Password'}
               </Button3D>
             </form>
 
             <div className="mt-8 pt-6 border-t border-white/10 text-center">
               <p className="text-sm text-slate-400">
-                {mode === 'signin' ? "Don't have an account?" : "Already have an account?"}{' '}
+                {mode === 'signin' ? "Don't have an account?" :
+                  mode === 'signup' ? "Already have an account?" : "Remembered your password?"}{' '}
                 <button
-                  onClick={toggleMode}
+                  type="button"
+                  onClick={() => setMode(mode === 'signup' ? 'signin' : 'signin')}
                   className="font-black text-aura-teal hover:text-white transition-all uppercase tracking-widest"
                 >
                   {mode === 'signin' ? 'Create Account' : 'Sign In'}

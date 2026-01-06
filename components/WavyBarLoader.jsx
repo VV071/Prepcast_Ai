@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const WavyBarLoader = ({
-    activeColor = '#BF00FF',
-    inactiveColor = 'rgba(191, 0, 255, 0.1)',
+    activeColor = '#FA5C5C',
+    inactiveColor = 'rgba(250, 92, 92, 0.1)',
     className = ''
 }) => {
     const variants = {
@@ -45,8 +45,8 @@ export const WavyBarLoader = ({
 
 // Compact version for inline loading
 export const WavyBarLoaderSmall = ({
-    activeColor = '#BF00FF',
-    inactiveColor = 'rgba(191, 0, 255, 0.1)',
+    activeColor = '#FA5C5C',
+    inactiveColor = 'rgba(250, 92, 92, 0.1)',
     className = ''
 }) => {
     const variants = {
@@ -88,8 +88,8 @@ export const WavyBarLoaderSmall = ({
 
 // Full page loader with centered positioning
 export const WavyBarLoaderFullPage = ({
-    activeColor = '#BF00FF',
-    inactiveColor = 'rgba(191, 0, 255, 0.1)',
+    activeColor = '#FA5C5C',
+    inactiveColor = 'rgba(250, 92, 92, 0.1)',
     message = 'Syncing Crystals...'
 }) => {
     return (

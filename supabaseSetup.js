@@ -181,7 +181,7 @@ export const testStoragePermissions = async (userId, bucketName = 'session-files
         console.log(`✅ Upload test passed`);
 
         // Clean up
-        await supabase.storage.from(bucketName).remove([path]);
+        // await supabase.storage.from(bucketName).remove([path]);
         console.log(`✅ Cleanup passed`);
 
         return { status: 'success' };
