@@ -1,0 +1,46 @@
+--- Starting Math Verification Tests ---
+
+Testing statsUtils...
+✅ PASS: statsUtils.mean
+✅ PASS: statsUtils.median
+✅ PASS: statsUtils.std (Population)
+✅ PASS: statsUtils.quartiles.q1
+✅ PASS: statsUtils.quartiles.q3
+✅ PASS: statsUtils.quartiles.iqr
+
+Testing Math & Text Utils...
+✅ PASS: cosineSimilarity Identical
+✅ PASS: cosineSimilarity Different
+✅ PASS: levenshtein distance
+
+Testing Forecasting...
+✅ PASS: SES returns correct number of steps
+✅ PASS: SES returns numbers
+✅ PASS: Double Exp Smoothing Step 1
+✅ PASS: AutoForecast selects Double Smoothing for Trend
+Forecast Confidence: 63.88835160664533
+✅ PASS: AutoForecast returns valid confidence
+
+Testing Data Processor...
+✅ PASS: Missing Value Imputation (Median) (10,11,12 -> 11)
+✅ PASS: Outlier Removal (IQR) worked (Value 10.5)
+
+Testing Weight Calculation...
+✅ PASS: Weighted Mean
+
+Testing User Question Scenarios...
+Test 1: Text/Spelling Errors in Numeric Columns
+✅ PASS: Text Error ("oops_text") replaced with Median (11)
+
+Test 2: Outlier Detection
+✅ PASS: Outlier (500) detected and replaced with Mean (150.00)
+
+----------------------------------------
+TOTAL: 19
+PASSED: 19
+FAILED: 0
+----------------------------------------
+
+📋 SUMMARY:
+1. Text/Spelling Errors: ✅ Treated as missing, replaced with median/mean
+2. Outliers: ✅ Detected and replaced (effectiveness depends on dataset size)

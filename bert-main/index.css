@@ -1,0 +1,566 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+
+
+/* ============================================
+   COLOR SYSTEM & DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* Font */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* PrepCast-AI Color System */
+  --color-aura-violet: #FA5C5C;
+  --color-aura-teal: #FBEF76;
+  --color-aura-pink: #FD8A6B;
+  --color-aura-gold: #FEC288;
+
+  /* Primary Colors (Violet Based) */
+  --color-primary-900: #2e003e;
+  --color-primary-800: #4b0062;
+  --color-primary-700: #6a008a;
+  --color-primary-600: #8800b2;
+  --color-primary-500: #BF00FF;
+  --color-primary-400: #d84dff;
+  --color-primary-300: #ec99ff;
+
+  /* Secondary Colors (Teal Based) */
+  --color-secondary-900: #003638;
+  --color-secondary-800: #005054;
+  --color-secondary-700: #006e73;
+  --color-secondary-600: #008f95;
+  --color-secondary-500: #00F5FF;
+  --color-secondary-400: #55f8ff;
+  --color-secondary-300: #99faff;
+
+  /* Accent Glows */
+  --color-accent-pink: #FF007F;
+  --color-accent-gold: #FFD700;
+
+  /* Backgrounds (Deep Neural Night) */
+  --color-bg-0: #05070a;
+  --color-bg-1: #0a0e17;
+  --color-bg-2: #121a2b;
+  --color-bg-3: #1a253d;
+
+  /* Crystal Glass */
+  --glass-ultra-light: rgba(250, 92, 92, 0.03);
+  --glass-light: rgba(250, 92, 92, 0.05);
+  --glass-medium: rgba(250, 92, 92, 0.08);
+  --glass-strong: rgba(250, 92, 92, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-refraction: rgba(251, 239, 118, 0.05);
+
+  /* Shadows (Aura Glow) */
+  --shadow-aura-violet: 0 4px 20px rgba(250, 92, 92, 0.2);
+  --shadow-aura-teal: 0 4px 20px rgba(251, 239, 118, 0.2);
+  --shadow-depth-1: 0 2px 10px rgba(0, 0, 0, 0.2);
+  --shadow-depth-2: 0 5px 20px rgba(0, 0, 0, 0.3);
+  --shadow-depth-3: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --shadow-depth-4: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --shadow-depth-5: 0 30px 70px rgba(0, 0, 0, 0.6);
+
+  /* Blur */
+  --blur-sm: 6px;
+  --blur-md: 12px;
+  --blur-lg: 20px;
+  --blur-xl: 32px;
+
+  /* 3D Dynamics */
+  --perspective-lg: 2000px;
+  --layer-popup: translateZ(50px);
+  --layer-base: translateZ(0);
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDE
+   ============================================ */
+
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #1e293b;
+  --color-text-tertiary: #475569;
+  --color-text-disabled: #64748b;
+}
+
+/* ============================================
+   GLOBAL BASE STYLES
+   ============================================ */
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-0);
+  color: #f8fafc;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(250, 92, 92, 0.12), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(251, 239, 118, 0.1), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(253, 138, 107, 0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* PrepCast-AI Utilities */
+.aura-gradient-violet {
+  background: linear-gradient(135deg, var(--color-aura-violet), var(--color-aura-pink));
+}
+
+.aura-gradient-teal {
+  background: linear-gradient(135deg, var(--color-aura-teal), var(--color-aura-gold));
+}
+
+.aura-text-gradient {
+  background: linear-gradient(135deg, var(--color-aura-violet), var(--color-aura-teal));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aura-border-glow {
+  position: relative;
+}
+
+.aura-border-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, var(--color-aura-violet), var(--color-aura-teal));
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.aura-border-glow:hover::after {
+  opacity: 0.6;
+}
+
+/* Light theme body adjustments */
+[data-theme="light"] body {
+  color: #0f172a;
+  background-color: #f8fafc;
+  background-image: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08), transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(139, 92, 246, 0.08), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(6, 182, 212, 0.05), transparent 50%);
+}
+
+/* ============================================
+   LIGHT THEME COMPREHENSIVE STYLES
+   ============================================ */
+
+[data-theme="light"] .glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .glass-medium {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .glass-strong {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+[data-theme="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+/* Light theme text colors */
+[data-theme="light"] .text-white {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .text-slate-500,
+[data-theme="light"] .text-slate-600 {
+  color: #64748b !important;
+}
+
+/* Light theme backgrounds */
+[data-theme="light"] .bg-slate-800,
+[data-theme="light"] .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .bg-slate-700 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Light theme borders */
+[data-theme="light"] [class*="border-white"],
+[data-theme="light"] [class*="border-slate"] {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Light theme shadows */
+[data-theme="light"] [class*="shadow"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Placeholder colors for light theme */
+[data-theme="light"] ::placeholder,
+[data-theme="light"] input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* ============================================
+   3D UTILITIES
+   ============================================ */
+
+.perspective-md {
+  perspective: var(--perspective-md);
+}
+
+.perspective-lg {
+  perspective: var(--perspective-lg);
+}
+
+.perspective-xl {
+  perspective: var(--perspective-xl);
+}
+
+.transform-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* ============================================
+   GLASS UTILITIES
+   ============================================ */
+
+.glass-ultra-light {
+  background: var(--glass-ultra-light);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.glass-light {
+  background: var(--glass-light);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.glass-medium {
+  background: var(--glass-medium);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.glass-strong {
+  background: var(--glass-strong);
+  backdrop-filter: blur(var(--blur-xl));
+  -webkit-backdrop-filter: blur(var(--blur-xl));
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* ============================================
+   ELEVATION SYSTEM
+   ============================================ */
+
+.elevation-0 {
+  box-shadow: none;
+}
+
+.elevation-1 {
+  box-shadow: var(--shadow-depth-1);
+}
+
+.elevation-2 {
+  box-shadow: var(--shadow-depth-2);
+}
+
+.elevation-3 {
+  box-shadow: var(--shadow-depth-3);
+}
+
+.elevation-4 {
+  box-shadow: var(--shadow-depth-4);
+}
+
+.elevation-5 {
+  box-shadow: var(--shadow-depth-5);
+}
+
+/* ============================================
+   REACTIVE LIGHTING
+   ============================================ */
+
+.reactive-lighting {
+  position: relative;
+}
+
+.reactive-lighting::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y),
+      rgba(191, 0, 255, calc(var(--light-intensity) * 0.15)),
+      transparent 40%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--transition-base) var(--ease-out);
+  pointer-events: none;
+}
+
+.reactive-lighting:hover::before {
+  opacity: 1;
+}
+
+/* ============================================
+   GRADIENT TEXT
+   ============================================ */
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-accent {
+  background: linear-gradient(135deg, #22d3ee, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(191, 0, 255, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(191, 0, 255, 0.6);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in var(--transition-base) var(--ease-out);
+}
+
+.animate-slide-up {
+  animation: slide-up var(--transition-slow) var(--ease-out);
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+
+.glow-primary {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-strong);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg-1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-aura-violet);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* ============================================
+   LIQUID GLASS EFFECT
+   ============================================ */
+
+@keyframes liquid-wave {
+
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+
+  25% {
+    transform: translateX(2px) translateY(-2px) scale(1.01);
+  }
+
+  50% {
+    transform: translateX(-2px) translateY(2px) scale(0.99);
+  }
+
+  75% {
+    transform: translateX(2px) translateY(2px) scale(1.01);
+  }
+}
+
+.liquid-glass-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.liquid-glass-card:hover .liquid-glass-distortion {
+  animation: liquid-wave 4s ease-in-out infinite;
+}
+
+/* Make the distortion layer more visible */
+.liquid-glass-distortion {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg,
+      rgba(191, 0, 255, 0.05),
+      rgba(0, 245, 255, 0.05),
+      rgba(255, 0, 127, 0.05));
+  filter: url(#glass-distortion);
+  -webkit-filter: url(#glass-distortion);
+  transition: all 0.3s ease;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reactive-lighting::before {
+    display: none;
+  }
+
+  .liquid-glass-card:hover .liquid-glass-distortion {
+    animation: none;
+  }
+}

@@ -1,0 +1,89 @@
+\
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepCast AI</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#2C5AA0', // Primary Blue
+              dark: '#1E3A6B',    // Hover state
+            },
+            secondary: {
+              DEFAULT: '#4A90E2', // Secondary Blue
+            },
+            neutral: {
+              dark: '#333333',    // Headers/Body
+              light: '#F8F9FA',   // Background Light
+              white: '#FFFFFF',   // Background Sections
+              border: '#E0E0E0',  // Border/Divider
+            },
+            status: {
+              success: '#28A745',
+              warning: '#FFC107',
+              error: '#DC3545',
+            },
+            text: {
+              primary: '#212529',
+              secondary: '#6C757D',
+              placeholder: '#ADB5BD',
+              link: '#0D6EFD',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F8F9FA;
+      color: #212529;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body>
+  <!-- SVG Filter for Liquid Glass Distortion -->
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <filter id="glass-distortion" x="-50%" y="-50%" width="200%" height="200%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02 0.02" numOctaves="3" seed="92" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="4" result="blurred" />
+        <feDisplacementMap in="SourceGraphic" in2="blurred" scale="15" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="root"></div>
+  <script type="module" src="/index.jsx"></script>
+</body>
+
+</html>

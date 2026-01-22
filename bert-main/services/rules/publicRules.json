@@ -1,0 +1,36 @@
+{
+    "age": {
+        "min": 0,
+        "max": 120,
+        "implausibleRanges": [
+            {
+                "min": 0,
+                "max": 10,
+                "confidence": 0.15
+            },
+            {
+                "min": 90,
+                "max": 120,
+                "confidence": 0.2
+            }
+        ]
+    },
+    "occupationAgeRules": [
+        {
+            "occupation": "retired",
+            "minAge": 45
+        },
+        {
+            "occupation": "software engineer",
+            "minAge": 18
+        },
+        {
+            "occupation": "doctor",
+            "minAge": 24
+        },
+        {
+            "occupation": "student",
+            "maxAge": 30
+        }
+    ]
+}
